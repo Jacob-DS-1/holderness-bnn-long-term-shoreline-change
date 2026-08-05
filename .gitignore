@@ -216,3 +216,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- project ---
+.DS_Store
+.virtual_documents/
+anaconda_projects/
+
+# Data and outputs (large, regenerable, or both)
+data/
+outputs/
+runs/
+*.gml
+*.gfs
+
+# Environment record: commit the lock file, ignore the snapshot
+environment.before-update.yml
