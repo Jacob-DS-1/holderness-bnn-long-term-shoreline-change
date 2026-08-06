@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/kvos/CoastSat.git",
+  "commit": "b9abb0c5902d9b160ba2790d55de41f0d5068497",
+  "commit_timestamp": "2026-05-29T15:05:51+02:00",
+  "environment": "coastsat310",
+  "license": "GPL-3.0"
+}
