@@ -46,3 +46,29 @@ POLYGON = [[[-0.25, 53.60],
             [0.18, 54.10],
             [-0.25, 54.10],
             [-0.25, 53.60]]]
+
+# --- transects ---
+TRANSECT_SPACING = 50
+TRANSECT_WINDOW = 250
+# ---
+# NOT YET FULLY RESOLVED, require empirical comparison between reference shorelines
+# and extracted shorelines to attempt to determine when OS OpenMap data was collected
+# before these extents can be finally chosen
+TRANSECT_LANDWARD = 300
+TRANSECT_SEAWARD = 400
+# ---
+TRANSECT_END_TRIM = 500     # drop transects within this distance of the northern end
+
+# Defended frontages, alongshore distance from Kilnsea (m). NOT YET FULLY RESOLVED.
+# Positions from the OS NamedPlace layer; extents to be refined from the
+# Shoreline Management Plan or by inspecting defence structures in the OS data.
+DEFENDED = {
+    'easington':   (4600, 5700),
+    'withernsea':  (14200, 16200),
+    'mappleton':   (34400, 35300),
+    'hornsea':     (36900, 38500),
+    'skipsea':     (47000, 47700),
+    'ulrome':      (48800, 49400),
+    'bridlington': (58000, 59800),
+}
+DOWNDRIFT_M = 2000   # Nicholls: terminal groyne effect extends 1-2 km downdrift
