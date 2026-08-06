@@ -3,8 +3,8 @@
 # This environment does NOT run CoastSat. CoastSat extraction runs in a separate
 # `coastsat310` environment, pinned to Python 3.10 and an older stack by its
 # pretrained classifiers. The two communicate only through files on disk
-# (pickled reference shorelines, metadata JSON, cross-shore CSVs), so nothing
-# here needs to match CoastSat's versions.
+# (GeoJSON geometry, metadata JSON and CSV tables), so nothing here needs to
+# match CoastSat's versions.
 #
 # Pinning strategy:
 #   - Exact pins on packages the scientific results depend on: geometry
@@ -17,8 +17,6 @@
 #
 # Single channel by design. Mixing conda-forge with defaults is what breaks
 # geospatial stacks - the Python bindings expect conda-forge's C libraries.
-# NOTE: tabulate in the current environment has a defaults-channel build string.
-# The nodefaults line below prevents that recurring.
 
 name: holderness-bnn
 
@@ -47,24 +45,26 @@ dependencies:
   - rioxarray=0.19.0
   - cartopy=0.25.0
 
-  # --- gridded data (ERA5 waves, tide model output) ---
+  # --- gridded data (Copernicus Marine waves, tide model output) ---
   - xarray=2026.4.0
   - netcdf4=1.7.4
   - h5netcdf=1.8.1
-  - cfgrib                # ADDED: ERA5 is often served as GRIB rather than netCDF
+  - cfgrib
   - dask=2026.3.0
   - zarr=3.1.6
   - pyarrow=24.0.0
 
+  # s3fs pulls aiobotocore; keep its botocore window aligned with boto3 below
+  - s3fs=2026.6.0
+  - aiobotocore=3.8.0
+
   # --- imagery / detection support ---
   - scikit-learn=1.8.0
   - scikit-image=0.26.0
-  # astropy pulls pyerfa; see the note at the bottom about the py310 build
-  # currently present in this environment
   - astropy=7.2.0
 
   # --- statistics ---
-  - statsmodels>=0.14     # ADDED: trend fitting with confidence intervals
+  - statsmodels>=0.14
 
   # --- tides ---
   - pyfes=2026.5.2
@@ -76,13 +76,13 @@ dependencies:
 
   # --- plotting ---
   - matplotlib=3.10.9
-  - ipympl>=0.9           # ADDED: %matplotlib widget for interactive pan/zoom
+  - ipympl>=0.9
 
   # --- notebooks and tooling (bounds only) ---
   - jupyterlab>=4.5
   - ipykernel>=7.0
   - ipywidgets>=8.1
-  - nb_conda_kernels      # ADDED: makes this env selectable as a kernel elsewhere
+  - nb_conda_kernels
   - pyyaml>=6.0
   - pytz>=2026.1
   - tqdm>=4.67
@@ -93,37 +93,23 @@ dependencies:
 
   - pip
   - pip:
-      - cdsapi>=0.7               # ADDED: Copernicus CDS client for ERA5
+      - cdsapi>=0.7
       - earthengine-api==1.7.24
+      - boto3==1.43.46
+      - botocore==1.43.46
       - copernicusmarine==2.4.1
       - properscoring==0.1
 
-# --- Updating an existing environment -----------------------------------------
+# --- Rebuilding and recording the environment --------------------------------
 #
-# This environment already exists. Do NOT use `conda env create` - it will refuse
-# or clobber. Snapshot first, then update in place:
+# Build from scratch so packages left by an older specification cannot survive:
 #
-#   conda env export -n holderness-bnn > environment.before-update.yml
-#   conda env update -n holderness-bnn -f environment.yml --prune
+#   conda env create -f environment.yml
+#   conda run -n holderness-bnn python -m pip install -e .
+#   conda run -n holderness-bnn python scripts/check-environment.py analysis
+#   conda run -n holderness-bnn python -m pip check
+#   conda run -n holderness-bnn python -m pytest
 #
-# --- Known issue to fix first -------------------------------------------------
-#
-# `conda list -n holderness-bnn --export` currently shows:
-#     pyerfa=2.0.1.5=py310hbb12772_2
-# A Python 3.10 build in a Python 3.11 environment. Verify and repair:
-#
-#   conda run -n holderness-bnn python -c "import astropy; print(astropy.__version__)"
-#   conda install -n holderness-bnn --force-reinstall pyerfa
-#
-# --- After updating -----------------------------------------------------------
-#
-#   conda activate holderness-bnn
-#   pip install -e .
-#   python -m ipykernel install --user --name holderness-bnn
-#   conda env export -n holderness-bnn > environment.lock.yml
-#
-# Commit both files: this one to rebuild from, the lock file as the record of
-# what actually produced the results. Cite the lock file in the write-up.
-#
-# The editable install is deliberately not in the pip section above: a failure
-# there aborts the whole solve, which is a slow way to lose an install.
+# `environment.lock.yml` records the complete tested solve without build strings
+# or a machine-specific prefix. The editable project install is deliberately not
+# part of either environment file.

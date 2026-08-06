@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "holderness-bnn"
 version = "0.1.0"
 description = "Long-term shoreline change analysis for the Holderness coast"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 
 [tool.setuptools]
 packages = ["holderness"]

@@ -5,6 +5,17 @@ These are readable, numbered entry points. Reusable calculations live in
 any working directory after this project has been installed with `pip install
 -e .` in the relevant environment.
 
+Check a newly built environment before starting work:
+
+```bash
+conda run -n holderness-bnn python scripts/check-environment.py analysis
+conda run -n holderness-bnn python -m pip check
+conda run -n holderness-bnn python -m pytest
+
+conda run -n coastsat310 python scripts/check-environment.py coastsat
+conda run -n coastsat310 python -m pip check
+```
+
 From the repository root, build the provisional OS seed and availability ROIs:
 
 ```bash

@@ -16,6 +16,20 @@ Verify a sibling checkout with:
 git -C ../CoastSat rev-parse HEAD
 ```
 
+Create the two isolated environments from the repository root:
+
+```bash
+conda env create -f environment.yml
+conda run -n holderness-bnn python -m pip install -e .
+
+conda env create -f environment.coastsat.yml
+conda run -n coastsat310 python -m pip install -e .
+```
+
+The complete tested analysis and CoastSat solves are recorded in
+`environment.lock.yml` and `environment.coastsat.lock.yml`. Run the matching
+smoke test after rebuilding either environment; see [`scripts/README.md`](scripts/README.md).
+
 ## Local settings
 
 The repository does not store credentials, local CoastSat paths or a personal
