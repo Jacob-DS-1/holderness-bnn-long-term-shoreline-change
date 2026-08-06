@@ -9,10 +9,13 @@ template is not evidence that a source has been cleared for publication.
 
 ### OS OpenMap - Local
 
-> Contains OS data © Crown copyright and database right [source year].
+> Contains OS data © Crown copyright and database right [year].
 
-The source year must come from the product release or download record; do not
-infer it from a file timestamp. The local tidal boundary is an undated,
+The attribution year is a publication or licensing detail, not the tidal
+line's acquisition date. Use an appropriate supply or publication year from an
+OS delivery record where available. If that record cannot be recovered, keep
+the placeholder until the attribution is resolved; do not infer an acquisition
+date from the file timestamp. The local tidal boundary is an undated,
 provisional geometry seed and not a shoreline observation.
 
 ### USGS Landsat Collection 2

@@ -94,15 +94,23 @@ def test_sensitive_or_unresolved_sources_are_not_release_ready():
         assert datasets[dataset_id]["publication"]["blockers"]
 
 
-def test_os_seed_role_and_missing_vintage_are_explicit():
+def test_os_seed_role_and_unavailable_acquisition_date_are_explicit():
     datasets = {dataset["id"]: dataset for dataset in load_manifest()["datasets"]}
     os_seed = datasets["os_openmap_local_tidal_boundary"]
 
     assert "not a dated shoreline observation" in os_seed["role"]
     assert os_seed["source"]["source_version"] is None
+    assert os_seed["source"]["product_snapshot_or_supply_date"] is None
+    assert os_seed["source"]["feature_acquisition_or_evidence_date"] is None
+    assert "does not supply" in os_seed["source"]["date_note"]
     assert os_seed["source"]["download_date"] is None
     assert os_seed["publication"]["release_ready"] is False
-    assert "[source year]" in os_seed["attribution"]
+    assert "method_use_allowed" in os_seed["publication"]["derived_output_status"]
+    assert "[year]" in os_seed["attribution"]
+    assert any(
+        "Do not cast the final 50 m master transects" in step
+        for step in os_seed["transformation_history"]
+    )
 
 
 def test_output_licence_is_conditional_on_source_clearance():

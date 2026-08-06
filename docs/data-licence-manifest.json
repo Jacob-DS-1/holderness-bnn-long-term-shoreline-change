@@ -19,12 +19,15 @@
         "url": "https://www.ordnancesurvey.co.uk/products/os-open-map-local",
         "access_route": "User-supplied GML at data/raw/TA.gml",
         "source_version": null,
+        "product_snapshot_or_supply_date": null,
+        "feature_acquisition_or_evidence_date": null,
+        "date_note": "OS OpenMap - Local does not supply a feature acquisition or evidence date in this GML. Do not infer one from the file timestamp. The product snapshot or supply date is also unknown unless an original delivery record is recovered.",
         "download_date": null,
         "checksum": null
       },
       "coverage": {
         "spatial_resolution": "1:10,000 product scale",
-        "temporal_coverage": "Undated cartographic representation; product vintage not yet recorded"
+        "temporal_coverage": "Undated cartographic representation; no feature acquisition or evidence date is supplied"
       },
       "licensing": {
         "licence": "Open Government Licence v3.0",
@@ -32,18 +35,19 @@
         "review_status": "verified_for_named_product",
         "reviewed_on": "2026-08-06"
       },
-      "attribution": "Contains OS data © Crown copyright and database right [source year].",
+      "attribution": "Contains OS data © Crown copyright and database right [year].",
       "transformation_history": [
         "Select and join Holderness mean-high-water and mean-low-water components.",
         "Construct an intertidal midpoint line as the provisional geometry seed.",
-        "Generate 50 m master transects and initial imagery retrieval regions."
+        "Generate initial imagery retrieval regions.",
+        "Do not cast the final 50 m master transects until the smoothed mid-record satellite reference line exists."
       ],
       "publication": {
         "raw_redistribution": "not_in_repository",
-        "derived_output_status": "allowed_with_attribution_after_metadata_completion",
+        "derived_output_status": "provisional_method_use_allowed; release of OS-derived geometry requires attribution completion",
         "release_ready": false,
         "blockers": [
-          "Record the exact OS OpenMap - Local release or source year, download date and file checksum."
+          "Before publishing OS-derived geometry, resolve the attribution year and record any recoverable product snapshot or supply date, download date and file checksum. Do not invent a feature acquisition date."
         ]
       }
     },
