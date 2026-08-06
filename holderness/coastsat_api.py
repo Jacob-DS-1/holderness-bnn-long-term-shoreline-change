@@ -4,7 +4,40 @@ GeoJSON geometry is authoritative. The NumPy arrays and dictionaries returned
 here are created in memory only when calling CoastSat.
 """
 
+import json
+from pathlib import Path
+import subprocess
+import sys
+
 import numpy as np
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def activate_checkout(coastsat_dir):
+    """Verify the pinned CoastSat checkout and make it importable."""
+    coastsat_dir = Path(coastsat_dir).expanduser().resolve()
+    if not (coastsat_dir / 'coastsat').is_dir():
+        raise FileNotFoundError(
+            f'CoastSat package directory not found at {coastsat_dir}'
+        )
+
+    revision = json.loads((REPO_ROOT / 'COASTSAT_REVISION').read_text())
+    expected = revision['commit']
+    actual = subprocess.run(
+        ['git', '-C', str(coastsat_dir), 'rev-parse', 'HEAD'],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    if actual != expected:
+        raise RuntimeError(f'CoastSat is at {actual}; expected {expected}')
+
+    checkout = str(coastsat_dir)
+    if checkout not in sys.path:
+        sys.path.insert(0, checkout)
+    return coastsat_dir
 
 
 def reference_line_to_array(line, spacing=15):

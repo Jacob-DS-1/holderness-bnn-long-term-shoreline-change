@@ -3,10 +3,9 @@
 
 import argparse
 import importlib
-import json
-import subprocess
-import sys
 from pathlib import Path
+
+from holderness import coastsat_api
 
 
 ANALYSIS_IMPORTS = (
@@ -46,19 +45,6 @@ def import_all(module_names):
         importlib.import_module(name)
 
 
-def check_coastsat_revision(coastsat_dir):
-    revision_file = Path(__file__).resolve().parents[1] / 'COASTSAT_REVISION'
-    revision = json.loads(revision_file.read_text())['commit']
-    actual = subprocess.run(
-        ['git', '-C', str(coastsat_dir), 'rev-parse', 'HEAD'],
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    if actual != revision:
-        raise RuntimeError(f'CoastSat is at {actual}; expected {revision}')
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('environment', choices=('analysis', 'coastsat'))
@@ -72,8 +58,7 @@ def main():
     if args.environment == 'analysis':
         import_all(ANALYSIS_IMPORTS)
     else:
-        check_coastsat_revision(args.coastsat_dir)
-        sys.path.insert(0, str(args.coastsat_dir))
+        coastsat_api.activate_checkout(args.coastsat_dir)
         import_all(COASTSAT_IMPORTS)
 
     print(f'{args.environment} environment imports passed')

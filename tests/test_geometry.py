@@ -1,5 +1,7 @@
 """Unit tests for geometry that do not require external data."""
 
+import subprocess
+
 import numpy as np
 import pytest
 from shapely.geometry import LineString
@@ -108,3 +110,17 @@ def test_coastsat_adapters_do_not_change_authoritative_geometry(transects,
     assert reference[-1] == pytest.approx([0, 1000])
     assert list(coast_sat_transects)[:2] == ['HOL_00000', 'HOL_00050']
     assert coast_sat_transects['HOL_00000'].shape == (2, 2)
+
+
+def test_coastsat_checkout_must_contain_package(tmp_path):
+    with pytest.raises(FileNotFoundError, match='CoastSat package directory'):
+        coastsat_api.activate_checkout(tmp_path)
+
+
+def test_coastsat_checkout_must_match_pin(tmp_path, monkeypatch):
+    (tmp_path / 'coastsat').mkdir()
+    result = subprocess.CompletedProcess([], 0, stdout='wrong-commit\n')
+    monkeypatch.setattr(subprocess, 'run', lambda *args, **kwargs: result)
+
+    with pytest.raises(RuntimeError, match='expected'):
+        coastsat_api.activate_checkout(tmp_path)

@@ -104,6 +104,8 @@ def test_os_seed_role_and_unavailable_acquisition_date_are_explicit():
     assert os_seed["source"]["feature_acquisition_or_evidence_date"] is None
     assert "does not supply" in os_seed["source"]["date_note"]
     assert os_seed["source"]["download_date"] is None
+    assert os_seed["source"]["checksum"].startswith("sha256:")
+    assert len(os_seed["source"]["checksum"]) == 71
     assert os_seed["publication"]["release_ready"] is False
     assert "method_use_allowed" in os_seed["publication"]["derived_output_status"]
     assert "[year]" in os_seed["attribution"]

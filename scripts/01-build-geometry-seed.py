@@ -1,12 +1,21 @@
 """Build the provisional OS geometry seed used for availability ROIs."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
 import pandas as pd
 
 from holderness import config, geometry
+
+
+def sha256(path):
+    digest = hashlib.sha256()
+    with path.open('rb') as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def main():
@@ -28,6 +37,7 @@ def main():
     seed, chainages, widths = geometry.build_os_seed(
         lines['mhw'], lines['mlw'], config.OS_SEED_STEP_M
     )
+    source_sha256 = sha256(config.OS_TIDAL_BOUNDARY_PATH)
 
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -36,9 +46,10 @@ def main():
     width_path = output_dir / 'os-intertidal-widths.csv'
     summary_path = output_dir / 'os-geometry-seed-summary.json'
 
-    geometry.write_geojson(
-        geometry.seed_geodataframe(seed, config.EPSG, config.SITE), seed_path
-    )
+    seed_frame = geometry.seed_geodataframe(seed, config.EPSG, config.SITE)
+    seed_frame['source_sha256'] = source_sha256
+    seed_frame['source_date_status'] = 'not_supplied_by_os_openmap_local'
+    geometry.write_geojson(seed_frame, seed_path)
     pd.DataFrame({
         'chainage_m': chainages,
         'intertidal_width_m': widths,
@@ -46,6 +57,8 @@ def main():
     summary_path.write_text(json.dumps({
         'role': 'provisional_geometry_seed',
         'source': config.OS_TIDAL_BOUNDARY_PATH.name,
+        'source_sha256': source_sha256,
+        'source_date_status': 'not_supplied_by_os_openmap_local',
         'epsg': config.EPSG,
         'feature_counts': counts,
         'length_m': round(seed.length, 1),

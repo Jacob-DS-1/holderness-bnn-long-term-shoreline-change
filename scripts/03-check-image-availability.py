@@ -25,6 +25,11 @@ def main():
     parser.add_argument('--stream', choices=('landsat', 'sentinel'), required=True)
     parser.add_argument('--gee-project')
     parser.add_argument(
+        '--coastsat-dir', type=Path,
+        default=Path(__file__).resolve().parents[2] / 'CoastSat',
+        help='CoastSat checkout (default: sibling ../CoastSat)',
+    )
+    parser.add_argument(
         '--rois', type=Path,
         default=config.GEOMETRY_DATA / 'availability-rois.geojson',
     )
@@ -47,7 +52,9 @@ def main():
         return
 
     project = config.get_gee_project(args.gee_project)
-    download_module = availability.connect_to_earth_engine(project)
+    download_module = availability.connect_to_earth_engine(
+        project, args.coastsat_dir
+    )
     scenes = availability.query_scene_availability(
         rois,
         stream=args.stream,

@@ -1,9 +1,16 @@
 """Regression checks against the local OS OpenMap Local extract."""
 
+import hashlib
+import json
+from pathlib import Path
+
 import numpy as np
 import pytest
 
 from holderness import config, geometry
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 @pytest.fixture(scope='session')
@@ -40,6 +47,23 @@ def test_source_feature_counts_and_geometry_quality(boundaries):
     assert counts['mhw']['n_in'] == 351
     assert counts['mlw']['n_in'] == 216
     assert all(values['n_in'] == values['n_out'] for values in counts.values())
+
+
+def test_source_checksum_matches_manifest():
+    if not config.OS_TIDAL_BOUNDARY_PATH.exists():
+        pytest.skip(f'source GML not present at {config.OS_TIDAL_BOUNDARY_PATH}')
+
+    manifest = json.loads(
+        (REPO_ROOT / 'docs' / 'data-licence-manifest.json').read_text()
+    )
+    datasets = {dataset['id']: dataset for dataset in manifest['datasets']}
+    recorded = datasets['os_openmap_local_tidal_boundary']['source']['checksum']
+
+    digest = hashlib.sha256()
+    with config.OS_TIDAL_BOUNDARY_PATH.open('rb') as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b''):
+            digest.update(chunk)
+    assert recorded == f'sha256:{digest.hexdigest()}'
 
 
 @pytest.mark.parametrize('name', ['mhw', 'mlw'])

@@ -23,7 +23,7 @@
         "feature_acquisition_or_evidence_date": null,
         "date_note": "OS OpenMap - Local does not supply a feature acquisition or evidence date in this GML. Do not infer one from the file timestamp. The product snapshot or supply date is also unknown unless an original delivery record is recovered.",
         "download_date": null,
-        "checksum": null
+        "checksum": "sha256:38215d36f1729f8cd2557d8af96d37dd09cc0c9809de234c351ddc2364c9b240"
       },
       "coverage": {
         "spatial_resolution": "1:10,000 product scale",
@@ -47,7 +47,7 @@
         "derived_output_status": "provisional_method_use_allowed; release of OS-derived geometry requires attribution completion",
         "release_ready": false,
         "blockers": [
-          "Before publishing OS-derived geometry, resolve the attribution year and record any recoverable product snapshot or supply date, download date and file checksum. Do not invent a feature acquisition date."
+          "Before publishing OS-derived geometry, resolve the attribution year and record any recoverable product snapshot or supply date and download date. Do not invent a feature acquisition date."
         ]
       }
     },

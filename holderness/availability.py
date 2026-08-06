@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from holderness import coastsat_api
+
 
 SCENE_COLUMNS = [
     'stream',
@@ -34,8 +36,9 @@ SCENE_COLUMNS = [
 ]
 
 
-def connect_to_earth_engine(project):
+def connect_to_earth_engine(project, coastsat_dir):
     """Authenticate through CoastSat and return its download module."""
+    coastsat_api.activate_checkout(coastsat_dir)
     try:
         from coastsat import SDS_download
     except ImportError as error:

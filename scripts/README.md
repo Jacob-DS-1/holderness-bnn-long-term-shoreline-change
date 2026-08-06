@@ -35,7 +35,9 @@ conda run -n coastsat310 python scripts/03-check-image-availability.py \
 
 Remove `--dry-run` to authenticate and query metadata. This script never
 downloads imagery. It writes scene, quarterly and summary manifests under
-`data/derived/availability/`.
+`data/derived/availability/`. It expects CoastSat at `../CoastSat`, verifies
+the commit in `COASTSAT_REVISION`, and accepts `--coastsat-dir` when the
+checkout is elsewhere.
 
 After the Landsat manifest exists, prepare an editable pilot candidate pool:
 
