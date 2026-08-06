@@ -41,3 +41,16 @@ export HOLDERNESS_GEE_PROJECT=your-google-cloud-project-id
 ```
 
 Authentication remains local to each user.
+
+## Licensing and data reuse
+
+Project software and documentation are GPL-3.0-only. Third-party datasets keep
+their own terms and are not distributed under the project licence. Before
+retrieving or publishing data, read [`LICENSING.md`](LICENSING.md), use the
+templates in [`ATTRIBUTION.md`](ATTRIBUTION.md), and complete the relevant
+record in
+[`docs/data-licence-manifest.json`](docs/data-licence-manifest.json).
+
+The local OS OpenMap - Local `TA.gml` remains an ignored, provisional geometry
+seed. It is not a dated shoreline observation and is not included in the
+repository.

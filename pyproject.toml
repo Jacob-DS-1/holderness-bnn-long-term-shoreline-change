@@ -7,6 +7,7 @@ name = "holderness-bnn"
 version = "0.1.0"
 description = "Long-term shoreline change analysis for the Holderness coast"
 requires-python = ">=3.10"
+license = "GPL-3.0-only"
 
 [tool.setuptools]
 packages = ["holderness"]

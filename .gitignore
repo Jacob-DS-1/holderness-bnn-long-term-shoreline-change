@@ -233,3 +233,14 @@ runs/
 
 # Environment record: commit the lock file, ignore the snapshot
 environment.before-update.yml
+
+# Local credentials and private keys
+credentials/
+secrets/
+.earthengine/
+client_secret*.json
+earth-engine-credentials*.json
+oauth*.json
+service-account*.json
+*.pem
+*.p12
