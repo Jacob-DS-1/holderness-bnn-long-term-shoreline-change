@@ -1,0 +1,83 @@
+"""Regression checks against the local OS OpenMap Local extract."""
+
+import numpy as np
+import pytest
+
+from holderness import config, geometry
+
+
+@pytest.fixture(scope='session')
+def boundaries():
+    if not config.GML_PATH.exists():
+        pytest.skip(f'source GML not present at {config.GML_PATH}')
+    return geometry.load_os_tidal_boundaries(
+        config.GML_PATH, config.LAYER, config.EPSG
+    )
+
+
+@pytest.fixture(scope='session')
+def boundary_lines(boundaries):
+    frames, _ = boundaries
+    return {
+        name: geometry.build_boundary_line(
+            frame, config.ANCHOR_SOUTH, config.ANCHOR_NORTH
+        )
+        for name, frame in frames.items()
+    }
+
+
+@pytest.fixture(scope='session')
+def os_seed(boundary_lines):
+    return geometry.build_os_seed(
+        boundary_lines['mhw'], boundary_lines['mlw'], config.OS_SEED_STEP
+    )
+
+
+def test_source_feature_counts_and_geometry_quality(boundaries):
+    _, counts = boundaries
+    assert counts['mhw']['n_in'] == 351
+    assert counts['mlw']['n_in'] == 216
+    assert all(values['n_in'] == values['n_out'] for values in counts.values())
+
+
+@pytest.mark.parametrize('name', ['mhw', 'mlw'])
+def test_boundary_length_and_orientation(boundary_lines, name):
+    line = boundary_lines[name]
+    assert line.length == pytest.approx(
+        config.EXPECTED_OS_LENGTH_M[name], abs=2
+    )
+    assert line.coords[0][1] < line.coords[-1][1]
+
+
+def test_low_water_line_is_seaward(boundary_lines):
+    mhw = boundary_lines['mhw']
+    mlw = boundary_lines['mlw']
+    samples = [mhw.interpolate(distance)
+               for distance in np.linspace(0, mhw.length, 200)]
+    paired = [mlw.interpolate(mlw.project(point)) for point in samples]
+    assert sum(low.x > high.x for high, low in zip(samples, paired)) > 190
+
+
+@pytest.mark.parametrize('name,expected', [('mhw', 6), ('mlw', 8)])
+def test_os_hairpin_count_is_stable(boundary_lines, name, expected):
+    assert len(geometry.hairpin_ranges(boundary_lines[name])) == expected
+
+
+def test_os_seed_geometry_and_intertidal_width(os_seed):
+    seed, chainages, widths = os_seed
+    assert seed.length == pytest.approx(
+        config.EXPECTED_OS_LENGTH_M['seed'], abs=2
+    )
+    assert chainages[0] == 0
+    assert np.median(widths) == pytest.approx(113, abs=2)
+    assert np.percentile(widths, 95) == pytest.approx(207, abs=3)
+    assert widths.max() == pytest.approx(241, abs=3)
+
+
+def test_short_component_guard(boundaries):
+    frames, _ = boundaries
+    with pytest.raises(ValueError, match='longest component'):
+        geometry.build_boundary_line(
+            frames['mhw'], config.ANCHOR_SOUTH, config.ANCHOR_NORTH,
+            min_component_length=10**9,
+        )
