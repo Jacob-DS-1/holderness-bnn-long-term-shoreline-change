@@ -17,6 +17,9 @@ DATA = REPO_ROOT / 'data'
 DATA_RAW = DATA / 'raw'
 DATA_INTERIM = DATA / 'interim'
 DATA_DERIVED = DATA / 'derived'
+GEOMETRY_DATA = DATA_DERIVED / 'geometry'
+AVAILABILITY_DATA = DATA_DERIVED / 'availability'
+PILOT_DATA = DATA_DERIVED / 'pilot'
 OUTPUTS = REPO_ROOT / 'outputs'
 FIGURES = OUTPUTS / 'figures'
 
@@ -105,6 +108,7 @@ SELECTED_LOW_WATER_FILTER = None
 # Candidate inherited from the exploratory geometry work. Recheck this after
 # the smoothed mid-record reference line has been constructed.
 TRANSECT_NORMAL_WINDOW_M = 250
+PILOT_CANDIDATE_SEED = 20260806
 
 
 # Scientific values not yet resolved -----------------------------------------

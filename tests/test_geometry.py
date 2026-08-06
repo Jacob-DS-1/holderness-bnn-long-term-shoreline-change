@@ -78,6 +78,24 @@ def test_os_seed_is_explicitly_provisional(reference_line):
     assert bool(frame.iloc[0]['provisional']) is True
 
 
+def test_availability_rois_have_fixed_cores_and_500_m_overlap():
+    line = LineString([(0, 0), (0, 12_000)])
+    rois = geometry.build_rois(
+        line,
+        epsg=config.EPSG,
+        length=config.ROI_LENGTH_M,
+        overlap=config.ROI_OVERLAP_M,
+        half_width=config.INITIAL_MAX_DIST_REF_M,
+        max_area=config.ROI_MAX_AREA_M2,
+    )
+
+    assert list(rois.roi_id) == ['HOL_ROI_01', 'HOL_ROI_02', 'HOL_ROI_03']
+    assert list(rois.core_start_m) == [0, 5000, 10000]
+    assert rois.iloc[0].extract_end_m - rois.iloc[1].extract_start_m == 500
+    assert (rois.area_m2 <= config.ROI_MAX_AREA_M2).all()
+    assert rois.provisional.all()
+
+
 def test_coastsat_adapters_do_not_change_authoritative_geometry(transects,
                                                                  reference_line):
     reference = coastsat_api.reference_line_to_array(

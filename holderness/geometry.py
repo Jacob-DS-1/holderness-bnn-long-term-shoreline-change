@@ -177,6 +177,48 @@ def seed_geodataframe(seed, epsg, site='holderness'):
     }], crs=f'EPSG:{epsg}')
 
 
+def build_rois(reference_line, epsg, length=5_000, overlap=500,
+               half_width=250, max_area=25_000_000, prefix='HOL_ROI'):
+    """Build provisional alongshore ROIs for image-availability queries.
+
+    Adjacent extraction ranges overlap by ``overlap`` metres. The core ranges
+    remain non-overlapping and later provide permanent ownership boundaries.
+    """
+    if length <= 0 or half_width <= 0 or max_area <= 0:
+        raise ValueError('length, half_width and max_area must be positive')
+    if overlap < 0 or overlap >= length:
+        raise ValueError('overlap must be non-negative and smaller than length')
+
+    records = []
+    for number, core_start in enumerate(np.arange(0, reference_line.length,
+                                                   length), start=1):
+        core_end = min(core_start + length, reference_line.length)
+        extract_start = max(0, core_start - overlap / 2)
+        extract_end = min(reference_line.length, core_end + overlap / 2)
+        segment = substring(reference_line, extract_start, extract_end)
+        polygon = segment.buffer(half_width, cap_style='flat')
+
+        if polygon.area > max_area:
+            raise ValueError(
+                f'{prefix}_{number:02d} area is {polygon.area:.0f} m2; '
+                f'maximum is {max_area:.0f} m2'
+            )
+
+        records.append({
+            'roi_id': f'{prefix}_{number:02d}',
+            'role': 'availability_roi',
+            'provisional': True,
+            'core_start_m': float(core_start),
+            'core_end_m': float(core_end),
+            'extract_start_m': float(extract_start),
+            'extract_end_m': float(extract_end),
+            'area_m2': float(polygon.area),
+            'geometry': polygon,
+        })
+
+    return gpd.GeoDataFrame(records, geometry='geometry', crs=f'EPSG:{epsg}')
+
+
 def sample_chainages(line, spacing, exclude_ranges=None, pad=0):
     """Sample fixed chainages, optionally omitting specified ranges."""
     if spacing <= 0:
