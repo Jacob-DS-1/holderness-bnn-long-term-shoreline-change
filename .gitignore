@@ -219,15 +219,28 @@ __marimo__/
 
 # --- project ---
 .DS_Store
+~$*.xlsx
 .virtual_documents/
 anaconda_projects/
 
 # Data and outputs (large, regenerable, or both)
 data/
-outputs/
+outputs/*
+!outputs/README.md
 runs/
 *.gml
 *.gfs
 
 # Environment record: commit the lock file, ignore the snapshot
 environment.before-update.yml
+
+# Local credentials and private keys
+credentials/
+secrets/
+.earthengine/
+client_secret*.json
+earth-engine-credentials*.json
+oauth*.json
+service-account*.json
+*.pem
+*.p12

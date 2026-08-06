@@ -1,0 +1,782 @@
+[
+  {
+    "id": "P001",
+    "phase": "scope",
+    "kind": "fixed",
+    "item": "Use standalone CoastSat pinned to a specific release or commit as the primary extraction tool, with CoastSeg retained only as an operational fallback using its CoastSat workflow."
+  },
+  {
+    "id": "P002",
+    "phase": "scope",
+    "kind": "fixed",
+    "item": "Construct the primary 1990–2024 record from Landsat 5, 7, 8 and 9 only, while processing Sentinel-2 separately for post-2015 validation and sensitivity analysis."
+  },
+  {
+    "id": "P003",
+    "phase": "scope",
+    "kind": "fixed",
+    "item": "Define the response as the long-term rate of a consistently extracted and vertically normalized Landsat sand–water interface without claiming that it represents cliff retreat or total coastal land loss."
+  },
+  {
+    "id": "P004",
+    "phase": "scope",
+    "kind": "fixed",
+    "item": "Limit the primary domain to the Holderness soft-cliff coast and treat Flamborough chalk, Spurn spit and other fundamentally different regimes separately or exclude them."
+  },
+  {
+    "id": "P005",
+    "phase": "scope",
+    "kind": "fixed",
+    "item": "Use EPSG:27700 throughout the shoreline analysis and define positive cross-shore change as seaward movement."
+  },
+  {
+    "id": "P006",
+    "phase": "datum",
+    "kind": "fixed",
+    "item": "Define the primary target elevation as the fixed 1991–2020 local mean-sea-level surface expressed in ODN and publish its numerical value or alongshore interpolation."
+  },
+  {
+    "id": "P007",
+    "phase": "datum",
+    "kind": "sensitivity",
+    "item": "Calculate an alternative target referenced to contemporaneous mean sea level to quantify how a moving datum changes the estimated shoreline rates."
+  },
+  {
+    "id": "P008",
+    "phase": "datum",
+    "kind": "limitation",
+    "item": "Interpret the difference between fixed- and moving-datum rates as a datum-choice contribution rather than a clean causal separation of sea-level rise from sediment-driven morphology."
+  },
+  {
+    "id": "P009",
+    "phase": "workflow",
+    "kind": "fixed",
+    "item": "Run a blinded pilot across representative coastal sectors before calculating or inspecting any full-coast shoreline rates."
+  },
+  {
+    "id": "P010",
+    "phase": "workflow",
+    "kind": "fixed",
+    "item": "Freeze the extraction, validation, filtering, correction and completeness rules after the pilot and before examining the final spatial rate pattern or fitting prediction models."
+  },
+  {
+    "id": "P011",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Retrieve Landsat imagery through Google Earth Engine while preserving source scene identifiers, exact UTC acquisition times, collection versions, WRS paths or rows and retrieval dates."
+  },
+  {
+    "id": "P012",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Use FES2022 for astronomical tide, GTSM v3 for annual mean-sea-level anomalies and storm-surge residuals, and keep all components in a documented common vertical reference."
+  },
+  {
+    "id": "P013",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Use Copernicus Marine product NWSHELF_REANALYSIS_WAV_004_015 for 1990–2024 wave forcing sampled from several offshore sectors along Holderness."
+  },
+  {
+    "id": "P014",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Use offshore wave height, peak period, direction and model depth at exact Landsat acquisition times, transforming values to deep-water equivalents before applying Stockdon equations where necessary."
+  },
+  {
+    "id": "P015",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Validate or bias-check wave reanalysis against the Hornsea directional WaveRider and validate modelled water levels against suitable BODC regional tide gauges."
+  },
+  {
+    "id": "P016",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Use Environment Agency time-stamped LiDAR as the default independent topographic validation source and add East Riding monitoring LiDAR or profiles where their access and licence are confirmed."
+  },
+  {
+    "id": "P017",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Derive representative foreshore profiles and slopes from repeated LiDAR or surveyed profiles, supported by suitable nearshore bathymetry rather than cliff or full-shoreface slopes."
+  },
+  {
+    "id": "P018",
+    "phase": "data",
+    "kind": "fixed",
+    "item": "Use only physical-covariate datasets whose licences permit MSc analysis, GitHub publication of the workflow and publication of the intended derived outputs."
+  },
+  {
+    "id": "P019",
+    "phase": "data",
+    "kind": "ongoing",
+    "item": "Record the licence, attribution text, version, download date, spatial resolution, temporal coverage and transformation history for every third-party dataset."
+  },
+  {
+    "id": "P020",
+    "phase": "pilot",
+    "kind": "fixed",
+    "item": "Stratify the pilot across Landsat missions, decades, seasons, water levels, defended and undefended sectors, exposed till, ords and other morphologically unusual settings."
+  },
+  {
+    "id": "P021",
+    "phase": "pilot",
+    "kind": "pilot_to_freeze",
+    "item": "Test CoastSat default and dark-sand classifiers during the pilot and select one coast-wide classifier using prespecified visual-QC and independent-validation criteria, with default as the tie-breaker."
+  },
+  {
+    "id": "P022",
+    "phase": "pilot",
+    "kind": "fallback",
+    "item": "If neither standard classifier works consistently, either train one Holderness-wide classifier as a stretch task or mask unreliable sectors instead of switching classifiers by image."
+  },
+  {
+    "id": "P023",
+    "phase": "pilot",
+    "kind": "pilot_to_freeze",
+    "item": "Compare no low-water filter, exclusion below local AMSL and exclusion below local AMSL plus 0.2 m, preferably alongside a profile-derived lower bound for the monotonic sandy foreshore."
+  },
+  {
+    "id": "P024",
+    "phase": "pilot",
+    "kind": "fixed",
+    "item": "Reserve independent LiDAR surveys, dates or sectors from classifier and correction selection for final validation whenever the number of usable survey–image pairs permits."
+  },
+  {
+    "id": "P025",
+    "phase": "pilot",
+    "kind": "fixed",
+    "item": "Select pilot settings from extraction validity, independent positional accuracy and availability statistics rather than from plausible-looking erosion rates or downstream model performance."
+  },
+  {
+    "id": "P026",
+    "phase": "pilot",
+    "kind": "fixed",
+    "item": "Generate scene and quarterly availability counts by mission, decade, season, ROI and coastal regime before calculating any rate."
+  },
+  {
+    "id": "P027",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Use an OGL OS OpenMap Local tidal line only as a chainage and geometry seed rather than as a dated shoreline observation."
+  },
+  {
+    "id": "P028",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Create a smoothed mid-record reference shoreline for transect orientation and buffer placement so that the unknown survey date of the OS line does not define the response."
+  },
+  {
+    "id": "P029",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Generate a master set of fixed shore-normal transects at approximately 50 m spacing, assign permanent identifiers from fixed chainage, preserve those identifiers and chainage in every correction and modelling variant, and derive deterministic nested 100 m, 200 m and 500 m subsets without regenerating the geometry."
+  },
+  {
+    "id": "P030",
+    "phase": "geometry",
+    "kind": "pilot_to_freeze",
+    "item": "Start with max_dist_ref equal to 250 m and increase it only in 25 m increments if an accepted pilot shoreline lies within 30 m of the buffer boundary."
+  },
+  {
+    "id": "P031",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Extend transects at least max_dist_ref plus 50 m in both directions, giving initial landward and seaward extents of 300 m under the proposed buffer."
+  },
+  {
+    "id": "P032",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Require every retained raw and corrected intersection to remain at least 50 m from either transect endpoint."
+  },
+  {
+    "id": "P033",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Use approximately 5 km-long alongshore ROIs, restrict cross-shore width to the extraction envelope, keep each ROI no larger than about 25 km² and provide 500 m overlap."
+  },
+  {
+    "id": "P034",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Assign each transect permanently to the ROI whose non-overlap core contains its origin and retain duplicate overlap extractions only for seam diagnostics."
+  },
+  {
+    "id": "P035",
+    "phase": "geometry",
+    "kind": "diagnostic",
+    "item": "Require overlap duplicates to have a provisional median absolute discrepancy below 10 m and a 95th percentile below 30 m without a persistent tile-boundary step."
+  },
+  {
+    "id": "P036",
+    "phase": "geometry",
+    "kind": "fixed",
+    "item": "Use CoastSat along_dist equal to 25 m, representing an approximately 50 m alongshore median window, with the approximately 50 m master transect spacing, and diagnose any adjacent-window overlap caused by coastal curvature or transect convergence during the pilot."
+  },
+  {
+    "id": "P037",
+    "phase": "extraction",
+    "kind": "fixed",
+    "item": "Use CoastSat compute_intersection_QC with at least three shoreline points and freeze all other intersection-quality settings during the pilot."
+  },
+  {
+    "id": "P038",
+    "phase": "extraction",
+    "kind": "fixed",
+    "item": "Use reproducible accept-or-reject visual quality control but keep per-image manual threshold adjustment disabled in the primary extraction."
+  },
+  {
+    "id": "P039",
+    "phase": "extraction",
+    "kind": "ongoing",
+    "item": "Maintain a scene manifest containing acceptance status, rejection reason, classifier, sensor, timestamp, cloud information, geometric accuracy, ROI and source scene identifier."
+  },
+  {
+    "id": "P040",
+    "phase": "extraction",
+    "kind": "fixed",
+    "item": "Exclude Landsat scenes whose measured metadata geometric RMSE exceeds 10 m and exclude scenes lacking a measured value from the primary analysis."
+  },
+  {
+    "id": "P041",
+    "phase": "extraction",
+    "kind": "fixed",
+    "item": "Represent residual georegistration error for accepted scenes as a shared scene-level displacement in the Monte Carlo model rather than assuming the exclusion threshold removes all error."
+  },
+  {
+    "id": "P042",
+    "phase": "extraction",
+    "kind": "fixed",
+    "item": "Inspect Landsat 7 SLC-off gaps, cloud-mask failures, foam, shadows, exposed platform and other invalid classifications during visual and automated QC."
+  },
+  {
+    "id": "P043",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "For the fixed-datum target, construct effective water level from the annual mean-sea-level anomaly, FES tide, GTSM surge and the selected wave term relative to the fixed ODN-referenced surface."
+  },
+  {
+    "id": "P044",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "Never combine GTSM total water level with separate FES tide or add wave setup to full R2% because either operation would double-count a component."
+  },
+  {
+    "id": "P045",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "Implement tide, surge and wave translation after quality-controlled shoreline intersection because standalone CoastSat does not natively provide setup or runup correction."
+  },
+  {
+    "id": "P046",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "Translate observations between effective and target elevations using the representative cross-shore profile function x(z) rather than forcing all scenes through one planar slope."
+  },
+  {
+    "id": "P047",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "Use piecewise lower-, middle- and upper-intertidal slopes only where the available profiles are insufficient to support a full elevation-to-position lookup."
+  },
+  {
+    "id": "P048",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "Propagate variation among repeated profiles as slope or profile-shape uncertainty rather than attempting to reconstruct a different beach profile for every Landsat acquisition."
+  },
+  {
+    "id": "P049",
+    "phase": "correction",
+    "kind": "conditional",
+    "item": "Treat Stockdon mean wave setup as the candidate primary wave correction only if independent Holderness validation supports it."
+  },
+  {
+    "id": "P050",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "Treat unresolved swash phase and wet-sand detection effects primarily as zero-centred shoreline-position uncertainty rather than a known deterministic displacement."
+  },
+  {
+    "id": "P051",
+    "phase": "correction",
+    "kind": "sensitivity",
+    "item": "Evaluate the common correction ladder raw, tide, tide plus surge, tide plus surge plus setup, setup plus incident swash and full R2% including infragravity swash."
+  },
+  {
+    "id": "P052",
+    "phase": "correction",
+    "kind": "sensitivity",
+    "item": "Keep incident-swash and full-R2% corrections as explicitly labelled sensitivities unless local validation demonstrates that CoastSat detects comparable runup-related contours."
+  },
+  {
+    "id": "P053",
+    "phase": "correction",
+    "kind": "pilot_to_freeze",
+    "item": "Freeze one water-level image filter using held-out validation and completeness, preferring the least restrictive rule whose accuracy is statistically competitive."
+  },
+  {
+    "id": "P054",
+    "phase": "correction",
+    "kind": "fixed",
+    "item": "Exclude scenes whose detected waterline lies on an unsuitable till platform, bar, channel, cliff, defence or other surface that invalidates the representative-profile translation."
+  },
+  {
+    "id": "P055",
+    "phase": "correction",
+    "kind": "diagnostic",
+    "item": "Report median, 90th, 95th and 99th percentiles of absolute GTSM surge and the proportion exceeding 0.1 m at candidate and accepted Landsat overpass times."
+  },
+  {
+    "id": "P056",
+    "phase": "correction",
+    "kind": "conditional",
+    "item": "Retain surge in the primary correction only when local gauge comparison is adequate and it materially improves validation or removes condition-dependent residual bias."
+  },
+  {
+    "id": "P057",
+    "phase": "correction",
+    "kind": "diagnostic",
+    "item": "Regress sampled tide, surge, setup and total correction elevation against year while controlling for season, mission, WRS path or row and ROI for both candidate and accepted scenes."
+  },
+  {
+    "id": "P058",
+    "phase": "correction",
+    "kind": "diagnostic",
+    "item": "Convert temporal trends in sampled water level into implied apparent shoreline rates and flag a median or coherent-sector effect greater than approximately 0.1 m per year."
+  },
+  {
+    "id": "P059",
+    "phase": "validation",
+    "kind": "fixed",
+    "item": "Estimate Holderness-specific signed SDS-to-datum residuals by coastal sector, mission, classifier, elevation band and wave state instead of importing a proxy-bias magnitude or direction from another coast."
+  },
+  {
+    "id": "P060",
+    "phase": "validation",
+    "kind": "fixed",
+    "item": "Treat a stable constant proxy offset as an absolute-position limitation because it does not alter LRR, while correcting or propagating mission- or condition-dependent bias that could alter the slope."
+  },
+  {
+    "id": "P061",
+    "phase": "validation",
+    "kind": "fixed",
+    "item": "Pair LiDAR or profile contours with same-day or ±3-day Landsat observations for primary validation and use ±7-day pairs only as a temporal-mismatch sensitivity."
+  },
+  {
+    "id": "P062",
+    "phase": "validation",
+    "kind": "fixed",
+    "item": "Do not use East Riding cliff-erosion posts as positional validation because they measure the cliff edge rather than the vertically normalized sand–water proxy."
+  },
+  {
+    "id": "P063",
+    "phase": "validation",
+    "kind": "fixed",
+    "item": "Compare correction variants using signed bias, MAE, RMSE and residual dependence on tide, surge, wave conditions, elevation band, mission and coastal sector."
+  },
+  {
+    "id": "P064",
+    "phase": "validation",
+    "kind": "fallback",
+    "item": "If independent validation is insufficient to distinguish hydrodynamic corrections, use tide plus validated surge or tide only as the conservative primary and retain setup and runup as sensitivities."
+  },
+  {
+    "id": "P065",
+    "phase": "aggregation",
+    "kind": "fixed",
+    "item": "Apply every correction variant to the same accepted scenes, transects and QC decisions so differences arise only from the correction being tested."
+  },
+  {
+    "id": "P066",
+    "phase": "aggregation",
+    "kind": "fixed",
+    "item": "Collapse genuine duplicate acquisitions and aggregate accepted positions into meteorological quarters DJF, MAM, JJA and SON using an equal-weight arithmetic mean."
+  },
+  {
+    "id": "P067",
+    "phase": "aggregation",
+    "kind": "fixed",
+    "item": "Retain quarters containing one accepted scene, leave empty quarters missing without interpolation and use a minimum of two scenes per quarter as a sensitivity."
+  },
+  {
+    "id": "P068",
+    "phase": "aggregation",
+    "kind": "fixed",
+    "item": "Store quarterly scene count, spread and propagated uncertainty but do not use empirical quarterly standard errors as primary WLS weights."
+  },
+  {
+    "id": "P069",
+    "phase": "aggregation",
+    "kind": "fixed",
+    "item": "Fit the primary rate regression with equal quarter weights and meteorological-season fixed effects so changing seasonal availability cannot masquerade as a trend."
+  },
+  {
+    "id": "P070",
+    "phase": "aggregation",
+    "kind": "sensitivity",
+    "item": "Report a plain DSAS-style unweighted LRR without seasonal effects and a propagated-variance-weighted regression as comparability sensitivities."
+  },
+  {
+    "id": "P071",
+    "phase": "target",
+    "kind": "fixed",
+    "item": "Require each retained transect to span at least 28 years, contain at least 20 distinct calendar years and 40 populated quarters, include two quarters in both 1990–1994 and 2020–2024, and represent every decade."
+  },
+  {
+    "id": "P072",
+    "phase": "target",
+    "kind": "conditional",
+    "item": "Permit one completeness-threshold amendment based only on blinded availability and QC counts before any shoreline rate is inspected."
+  },
+  {
+    "id": "P073",
+    "phase": "target",
+    "kind": "diagnostic",
+    "item": "Test for Landsat mission offsets during overlap periods and include mission effects as a sensitivity if the offsets could bias the long-term slope."
+  },
+  {
+    "id": "P074",
+    "phase": "target",
+    "kind": "fixed",
+    "item": "Store each transect's LRR, sign convention, standard error, interval, residual RMSE, R², first and last date, span, scenes, quarters, years and mission composition."
+  },
+  {
+    "id": "P075",
+    "phase": "target",
+    "kind": "fixed",
+    "item": "Estimate rate uncertainty with the joint correction Monte Carlo and a serial-correlation-aware method such as a moving-block bootstrap or HAC-adjusted regression."
+  },
+  {
+    "id": "P076",
+    "phase": "target",
+    "kind": "diagnostic",
+    "item": "Compare the full linear trend with a quadratic fit and fixed early-versus-late slopes using serial-correlation-aware uncertainty and false-discovery-rate control."
+  },
+  {
+    "id": "P077",
+    "phase": "target",
+    "kind": "diagnostic",
+    "item": "Test changepoints only at known defence interventions where both temporal segments meet completeness criteria and avoid unconstrained changepoint searches at every transect."
+  },
+  {
+    "id": "P078",
+    "phase": "target",
+    "kind": "fixed",
+    "item": "Map non-stationary transects and run a severe-nonlinearity exclusion sensitivity without using any target-derived nonlinearity flag as a model predictor."
+  },
+  {
+    "id": "P079",
+    "phase": "covariates",
+    "kind": "fixed",
+    "item": "Candidate physical covariates include cliff height and slope, lithology, beach width or level, ord state, platform and nearshore slope, orientation, curvature, waves, water levels, rainfall, groundwater proxies and defence status."
+  },
+  {
+    "id": "P080",
+    "phase": "covariates",
+    "kind": "fixed",
+    "item": "Match covariate summaries to 1990–2024 where possible and explicitly flag present-day variables that may not represent historical conditions."
+  },
+  {
+    "id": "P081",
+    "phase": "covariates",
+    "kind": "fixed",
+    "item": "Construct current defence geometry and coarse type from EA AIMS and the council's named defended frontages, while obtaining construction and major-extension dates from ERYC or EA records."
+  },
+  {
+    "id": "P082",
+    "phase": "covariates",
+    "kind": "fixed",
+    "item": "Represent defences primarily with the fraction of 1990–2024 spent defended and signed alongshore distance to the nearest defence end capped at approximately 5 km."
+  },
+  {
+    "id": "P083",
+    "phase": "covariates",
+    "kind": "fallback",
+    "item": "If defence history cannot be verified or published, use current defence status plus a history-unknown flag and perform an undefended-only sensitivity rather than guessing dates."
+  },
+  {
+    "id": "P084",
+    "phase": "covariates",
+    "kind": "fixed",
+    "item": "Exclude response-derived neighbour summaries, smoothed shoreline rates, NCERM predictions and other circular or leakage-prone variables from the predictor set."
+  },
+  {
+    "id": "P085",
+    "phase": "covariates",
+    "kind": "diagnostic",
+    "item": "Compare tide-only and setup-corrected targets when slope or wave statistics are predictors so target-construction coupling cannot be mistaken for a physical relationship."
+  },
+  {
+    "id": "P086",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Use 2,000 joint shoreline-correction Monte Carlo draws with a fixed seed and check summaries at 500, 1,000 and 2,000 draws for convergence."
+  },
+  {
+    "id": "P087",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Require rate standard deviations to change by less than about 2% and 95% interval endpoints by less than roughly 0.02–0.05 m per year between the final Monte Carlo checks."
+  },
+  {
+    "id": "P088",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Draw tide and surge error as a scene-wide or low-rank coastal field, geolocation as one two-dimensional vector per source scene, wave error as a correlated field and profile error as a temporally persistent field."
+  },
+  {
+    "id": "P089",
+    "phase": "uncertainty",
+    "kind": "conditional",
+    "item": "Estimate wave-error correlation from multiple reanalysis nodes where possible, otherwise use a 10 km exponential range with 5 km and 20 km sensitivities."
+  },
+  {
+    "id": "P090",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Share source-scene errors across all ROIs and nearby transects affected by that acquisition rather than drawing independent corrections for each intersection."
+  },
+  {
+    "id": "P091",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Save the joint Monte Carlo matrix of transect-level LRR draws as well as each transect's marginal rate-estimation variance."
+  },
+  {
+    "id": "P092",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Train the heteroscedastic dropout MLP with estimated LRR distributed as Normal of network mean and variance equal to learned conditional variance plus known LRR-estimation variance."
+  },
+  {
+    "id": "P093",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Do not additionally inverse-variance weight the BNN loss when the known LRR-estimation variance is already included in its likelihood."
+  },
+  {
+    "id": "P094",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Report LRR-estimation uncertainty, learned conditional residual variance and MC-dropout variance as three distinct uncertainty components."
+  },
+  {
+    "id": "P095",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Define latent-rate predictive variance as mean dropout conditional variance plus variance of dropout means, adding LRR-estimation variance only when predicting another estimated SDS rate."
+  },
+  {
+    "id": "P096",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Use enough stochastic dropout passes for predictive moments and mixture quantiles to converge, with approximately 1,000 passes as the initial inference setting."
+  },
+  {
+    "id": "P097",
+    "phase": "uncertainty",
+    "kind": "fixed",
+    "item": "Calculate predictive intervals from the dropout mixture rather than assuming that mean plus or minus 1.96 standard deviations is necessarily valid."
+  },
+  {
+    "id": "P098",
+    "phase": "uncertainty",
+    "kind": "limitation",
+    "item": "Describe MC-dropout variance as approximate epistemic uncertainty and the learned variance as conditional residual uncertainty that may include omitted processes, misspecification and unresolved non-stationarity."
+  },
+  {
+    "id": "P099",
+    "phase": "uncertainty",
+    "kind": "sensitivity",
+    "item": "Refit the selected small MLP on approximately 20 coherent joint target draws to assess label-construction uncertainty separately from dropout epistemic uncertainty."
+  },
+  {
+    "id": "P100",
+    "phase": "modelling",
+    "kind": "fixed",
+    "item": "Treat DSAS-style LRR as the response-construction method rather than as a spatial-prediction benchmark."
+  },
+  {
+    "id": "P101",
+    "phase": "modelling",
+    "kind": "fixed",
+    "item": "Compare a mean baseline, ridge regression, gradient boosting, deterministic MLP, ordinary kriging and regression kriging on the identical target and spatial folds."
+  },
+  {
+    "id": "P102",
+    "phase": "modelling",
+    "kind": "fixed",
+    "item": "Include deterministic heteroscedastic MLP and homoscedastic MC-dropout MLP ablations so the effects of nonlinearity, the variance head and dropout can be separated."
+  },
+  {
+    "id": "P103",
+    "phase": "modelling",
+    "kind": "fixed",
+    "item": "Keep the neural network deliberately small, initially using one or two hidden layers of approximately 16–32 units with dropout and regularization tuned inside spatial cross-validation."
+  },
+  {
+    "id": "P104",
+    "phase": "modelling",
+    "kind": "fixed",
+    "item": "Use one-dimensional alongshore chainage for variograms, kriging covariance and fold geometry rather than unrestricted two-dimensional Euclidean distance."
+  },
+  {
+    "id": "P105",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Use five fixed contiguous outer test blocks of approximately 12 km so every model is evaluated on prediction to an unseen coastal sector."
+  },
+  {
+    "id": "P106",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Estimate each fold's guard width from the practical range of a training-only residual variogram after a deliberately simple physical or chainage baseline and round it upward to 0.5 km."
+  },
+  {
+    "id": "P107",
+    "phase": "evaluation",
+    "kind": "sensitivity",
+    "item": "Evaluate zero, one-range and two-range guard buffers and consider one shifted block partition to test dependence on the chosen boundaries."
+  },
+  {
+    "id": "P108",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Perform imputation, scaling, feature selection, hyperparameter tuning and variogram fitting entirely within the training portion of each nested spatial fold."
+  },
+  {
+    "id": "P109",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Do not use random transect splits because neighbouring observations share geomorphic signal, covariates, shoreline points and scene-level errors."
+  },
+  {
+    "id": "P110",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Evaluate point predictions with MAE, RMSE and bias using identical held-out observations and folds for every model."
+  },
+  {
+    "id": "P111",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Evaluate probabilistic predictions with NLL, CRPS, interval score, 50%, 80% and 95% coverage, interval width and calibration plots."
+  },
+  {
+    "id": "P112",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Report calibration by coastal block, defended status, coastal regime and covariate-extrapolation distance rather than only as a coast-wide average."
+  },
+  {
+    "id": "P113",
+    "phase": "evaluation",
+    "kind": "diagnostic",
+    "item": "Report nominal transect count, spacing, coastline length, fitted correlation range, outer-block count and mean-equivalent effective sample size N² divided by 1ᵀR1."
+  },
+  {
+    "id": "P114",
+    "phase": "evaluation",
+    "kind": "diagnostic",
+    "item": "Use spatial learning curves and deterministic nested 100 m, 200 m and 500 m thinning sensitivities to determine whether nonlinear performance depends mainly on redundant neighbouring transects."
+  },
+  {
+    "id": "P115",
+    "phase": "evaluation",
+    "kind": "limitation",
+    "item": "If the residual correlation range approaches half the coastline, report that genuinely independent spatial validation and strong nonlinear-learning claims are not supported."
+  },
+  {
+    "id": "P116",
+    "phase": "evaluation",
+    "kind": "fixed",
+    "item": "Run the complete benchmark and BNN comparison on the frozen primary target and refit only selected models on the most scientifically important alternative target."
+  },
+  {
+    "id": "P117",
+    "phase": "licensing",
+    "kind": "fixed",
+    "item": "Keep CoastSat-dependent extraction code GPL-3.0-compatible and separate downstream analysis code if a more permissive licence is desired."
+  },
+  {
+    "id": "P118",
+    "phase": "licensing",
+    "kind": "fixed",
+    "item": "Licence original derived shorelines, rate tables and model outputs under CC BY 4.0 or CC0 only to the extent permitted by inherited source-data terms."
+  },
+  {
+    "id": "P119",
+    "phase": "licensing",
+    "kind": "fixed",
+    "item": "Apply the required Landsat acknowledgement, Copernicus attribution, OGL notices and dataset-specific East Riding, Environment Agency, BGS and OS credits."
+  },
+  {
+    "id": "P120",
+    "phase": "licensing",
+    "kind": "fixed",
+    "item": "Do not redistribute raw FES grids and include the required AVISO credit and retrieval or licence details for tide-derived outputs."
+  },
+  {
+    "id": "P121",
+    "phase": "licensing",
+    "kind": "fixed",
+    "item": "Keep Google Earth Engine credentials, OAuth tokens, service-account keys and other secrets outside Git and require each reproducer to authenticate independently."
+  },
+  {
+    "id": "P122",
+    "phase": "licensing",
+    "kind": "fixed",
+    "item": "Use OS OpenData and explicitly open BGS products rather than premium or education-licensed alternatives whose redistribution terms would constrain the GitHub workflow."
+  },
+  {
+    "id": "P123",
+    "phase": "licensing",
+    "kind": "ongoing",
+    "item": "Verify the exact access and redistribution terms for every East Riding survey epoch before publishing source files or detailed derivatives from it."
+  },
+  {
+    "id": "P124",
+    "phase": "reproducibility",
+    "kind": "fixed",
+    "item": "Pin the CoastSat commit, Python environment, dependency lock, Google Earth Engine collections, tide and wave product versions, CRS, datum, transects, random seeds and cross-validation folds."
+  },
+  {
+    "id": "P125",
+    "phase": "reproducibility",
+    "kind": "fixed",
+    "item": "Publish scripts, configuration files, ROI and transect geometries, source scene identifiers, QC decisions, derived shorelines, quarterly series, rate tables, model settings and evaluation results."
+  },
+  {
+    "id": "P126",
+    "phase": "reproducibility",
+    "kind": "fixed",
+    "item": "Preserve checksums, retrieval dates, spatial nodes, transformation settings and required attribution for all water-level, wave, profile and covariate inputs."
+  },
+  {
+    "id": "P127",
+    "phase": "reproducibility",
+    "kind": "fixed",
+    "item": "Do not commit credentials, restricted model grids, proprietary basemap pixels, premium geospatial data or unnecessary large raw satellite files."
+  },
+  {
+    "id": "P128",
+    "phase": "reporting",
+    "kind": "fixed",
+    "item": "Report the proxy definition, datum, correction ladder, exclusions, missingness, validation coverage, completeness losses and all pilot amendments transparently."
+  },
+  {
+    "id": "P129",
+    "phase": "reporting",
+    "kind": "limitation",
+    "item": "State that a 1990–2024 LRR is a best linear summary rather than evidence of a stationary local process, particularly where migrating ords or episodic failures dominate."
+  },
+  {
+    "id": "P130",
+    "phase": "reporting",
+    "kind": "limitation",
+    "item": "Avoid describing the derived shoreline positions as survey-grade truth or the BNN uncertainty components as physically unique unless independent calibration supports those claims."
+  }
+]

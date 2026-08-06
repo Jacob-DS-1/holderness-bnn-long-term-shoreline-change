@@ -1,0 +1,443 @@
+{
+  "schema_version": 1,
+  "last_terms_review": "2026-08-06",
+  "purpose": "Planned and active third-party datasets for the Holderness shoreline-change workflow.",
+  "repository_policy": {
+    "raw_data_committed": false,
+    "default_derived_data_licence": "CC-BY-4.0",
+    "alternative_derived_data_licence": "CC0-1.0",
+    "release_rule": "A derived output must have an explicit licence and no unresolved blockers for any contributing dataset.",
+    "credentials_committed": false
+  },
+  "datasets": [
+    {
+      "id": "os_openmap_local_tidal_boundary",
+      "name": "OS OpenMap - Local tidal boundary",
+      "role": "Provisional chainage and geometry seed only; not a dated shoreline observation.",
+      "provider": "Ordnance Survey",
+      "source": {
+        "url": "https://www.ordnancesurvey.co.uk/products/os-open-map-local",
+        "access_route": "User-supplied GML at data/raw/TA.gml",
+        "source_version": null,
+        "product_snapshot_or_supply_date": null,
+        "feature_acquisition_or_evidence_date": null,
+        "date_note": "OS OpenMap - Local does not supply a feature acquisition or evidence date in this GML. Do not infer one from the file timestamp. The product snapshot or supply date is also unknown unless an original delivery record is recovered.",
+        "download_date": null,
+        "checksum": "sha256:38215d36f1729f8cd2557d8af96d37dd09cc0c9809de234c351ddc2364c9b240"
+      },
+      "coverage": {
+        "spatial_resolution": "1:10,000 product scale",
+        "temporal_coverage": "Undated cartographic representation; no feature acquisition or evidence date is supplied"
+      },
+      "licensing": {
+        "licence": "Open Government Licence v3.0",
+        "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        "review_status": "verified_for_named_product",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Contains OS data © Crown copyright and database right [year].",
+      "transformation_history": [
+        "Select and join Holderness mean-high-water and mean-low-water components.",
+        "Construct an intertidal midpoint line as the provisional geometry seed.",
+        "Generate initial imagery retrieval regions.",
+        "Do not cast the final 50 m master transects until the smoothed mid-record satellite reference line exists."
+      ],
+      "publication": {
+        "raw_redistribution": "not_in_repository",
+        "derived_output_status": "provisional_method_use_allowed; release of OS-derived geometry requires attribution completion",
+        "release_ready": false,
+        "blockers": [
+          "Before publishing OS-derived geometry, resolve the attribution year and record any recoverable product snapshot or supply date and download date. Do not invent a feature acquisition date."
+        ]
+      }
+    },
+    {
+      "id": "usgs_landsat_collection_2_level_1",
+      "name": "USGS Landsat Collection 2 Tier 1 TOA imagery",
+      "role": "Primary 1990-2024 shoreline-extraction record from Landsat 5, 7, 8 and 9.",
+      "provider": "U.S. Geological Survey",
+      "source": {
+        "url": "https://www.usgs.gov/landsat-missions/landsat-collection-2-level-1-data",
+        "access_route": "Google Earth Engine collections LANDSAT/LT05/C02/T1_TOA, LANDSAT/LE07/C02/T1_TOA, LANDSAT/LC08/C02/T1_TOA and LANDSAT/LC09/C02/T1_TOA",
+        "source_version": "Collection 2, Tier 1, Level 1 TOA",
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Sensor and band dependent; 30 m multispectral bands used by the extraction workflow",
+        "temporal_coverage": "1990-01-01 to 2024-12-31"
+      },
+      "licensing": {
+        "licence": "USGS public domain",
+        "url": "https://www.usgs.gov/faqs/are-there-any-restrictions-use-or-redistribution-landsat-data",
+        "review_status": "verified_for_named_product",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Landsat Collection 2 Level-1 images courtesy of the U.S. Geological Survey.",
+      "transformation_history": [
+        "Query metadata through Google Earth Engine while preserving collection and source scene identifiers.",
+        "Extract the sand-water interface with the pinned CoastSat workflow.",
+        "Apply pilot-approved quality control and vertical normalization."
+      ],
+      "publication": {
+        "raw_redistribution": "not_in_repository",
+        "derived_output_status": "allowed_with_source_acknowledgement",
+        "release_ready": false,
+        "blockers": [
+          "Record source scene IDs, exact UTC acquisition times, collection identifiers and metadata retrieval date."
+        ]
+      }
+    },
+    {
+      "id": "copernicus_sentinel_2_harmonized",
+      "name": "Copernicus Sentinel-2 harmonized imagery",
+      "role": "Separate post-2015 validation and sensitivity stream.",
+      "provider": "European Union Copernicus programme",
+      "source": {
+        "url": "https://documentation.dataspace.copernicus.eu/FAQ.html",
+        "access_route": "Google Earth Engine collection COPERNICUS/S2_HARMONIZED",
+        "source_version": "S2_HARMONIZED; processing baseline must be captured per source scene",
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "10 m, 20 m or 60 m depending on band",
+        "temporal_coverage": "2015-01-01 to 2024-12-31"
+      },
+      "licensing": {
+        "licence": "Legal notice on the use of Copernicus Sentinel Data and Service Information",
+        "url": "https://documentation.dataspace.copernicus.eu/FAQ.html",
+        "review_status": "verified_for_named_product",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Contains modified Copernicus Sentinel data [acquisition year or years].",
+      "transformation_history": [
+        "Query and process separately from the Landsat primary record.",
+        "Use only for post-2015 validation and sensitivity analysis."
+      ],
+      "publication": {
+        "raw_redistribution": "not_in_repository",
+        "derived_output_status": "allowed_with_copernicus_notice",
+        "release_ready": false,
+        "blockers": [
+          "Record source scene IDs, acquisition years, collection or processing baselines and retrieval date."
+        ]
+      }
+    },
+    {
+      "id": "aviso_fes2022",
+      "name": "FES2022 global ocean tide model",
+      "role": "Astronomical tide at satellite acquisition times.",
+      "provider": "CNES / LEGOS / NOVELTIS / CLS, distributed by AVISO+",
+      "source": {
+        "url": "https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes.html",
+        "access_route": "Registered AVISO+ account under the licence accepted by the individual user",
+        "source_version": "FES2022b, Version 2024; exact distributed grid choice to be recorded",
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "1/30° x 1/30° distributed grids; record extrapolated or non-extrapolated choice",
+        "temporal_coverage": "Harmonic tide model evaluated at 1990-2024 image acquisition times"
+      },
+      "licensing": {
+        "licence": "AVISO+ products and services licence accepted on registration",
+        "url": "https://www.aviso.altimetry.fr/en/data/product-information/citation-and-aviso-products-licence.html",
+        "review_status": "verify_accepted_terms_at_download",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "The FES2022 Tide product was funded by CNES, produced by LEGOS, NOVELTIS and CLS and made freely available by AVISO. CNES (2024), FES2022 (Finite Element Solution) Tidal model, Version 2024, https://doi.org/10.24400/527896/A01-2024.004.",
+      "transformation_history": [
+        "Evaluate astronomical tide at the selected offshore point and exact image acquisition time.",
+        "Transform to the documented common vertical reference."
+      ],
+      "publication": {
+        "raw_redistribution": "forbidden_by_project_policy",
+        "derived_output_status": "derived_values_only_after_terms_check_and_attribution",
+        "release_ready": false,
+        "blockers": [
+          "Save the accepted AVISO+ licence version, retrieval date, selected files, checksums and prediction settings.",
+          "Confirm that the intended level of tide-derived detail can be published; never publish raw FES grids."
+        ]
+      }
+    },
+    {
+      "id": "copernicus_cds_gtsm_v3",
+      "name": "Global Tide and Surge Model v3 reanalysis",
+      "role": "Annual mean-sea-level anomalies and storm-surge residuals.",
+      "provider": "Copernicus Climate Change Service / Deltares",
+      "source": {
+        "url": "https://cds.climate.copernicus.eu/datasets/sis-water-level-change-timeseries-cmip6",
+        "access_route": "Copernicus Climate Data Store",
+        "source_version": "GTSM v3.0; DOI 10.24381/cds.a6d42d60",
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Approximately 1.25 km coastal resolution in Europe; record selected nodes",
+        "temporal_coverage": "Reanalysis 1950-2024; project subset 1990-2024"
+      },
+      "licensing": {
+        "licence": "Creative Commons Attribution 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "review_status": "verified_for_named_product",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Global sea level change time series from 1950 to 2050 derived from reanalysis and high resolution CMIP6 climate projections. Copernicus Climate Change Service, DOI: 10.24381/cds.a6d42d60 (accessed [date]).",
+      "transformation_history": [
+        "Select and record coastal model nodes used for Holderness.",
+        "Separate annual mean-sea-level anomalies and storm-surge residuals without double-counting tide.",
+        "Transform components to the documented common vertical reference."
+      ],
+      "publication": {
+        "raw_redistribution": "not_in_repository",
+        "derived_output_status": "allowed_with_attribution",
+        "release_ready": false,
+        "blockers": [
+          "Confirm the exact CDS dataset version and variables, then record access date, selected nodes, files and checksums."
+        ]
+      }
+    },
+    {
+      "id": "copernicus_marine_nws_wave_reanalysis",
+      "name": "Atlantic - European North West Shelf - Wave Physics Reanalysis",
+      "role": "Hourly wave forcing at exact Landsat acquisition times.",
+      "provider": "E.U. Copernicus Marine Service",
+      "source": {
+        "url": "https://data.marine.copernicus.eu/product/NWSHELF_REANALYSIS_WAV_004_015/description",
+        "access_route": "Copernicus Marine Data Store",
+        "source_version": "NWSHELF_REANALYSIS_WAV_004_015; DOI 10.48670/moi-00060; downloaded dataset version pending",
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Approximately 1.5 km regular output grid",
+        "temporal_coverage": "Product from 1980 onward; project subset 1990-2024"
+      },
+      "licensing": {
+        "licence": "Copernicus Marine Service Licence",
+        "url": "https://marine.copernicus.eu/user-corner/service-commitments-and-licence",
+        "review_status": "verified_for_named_product",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00060.",
+      "transformation_history": [
+        "Sample recorded offshore sectors at exact Landsat acquisition times.",
+        "Transform height, period and direction to deep-water equivalents where required by the selected run-up equation."
+      ],
+      "publication": {
+        "raw_redistribution": "not_in_repository",
+        "derived_output_status": "allowed_with_copernicus_marine_credit",
+        "release_ready": false,
+        "blockers": [
+          "Record access date, exact dataset version, selected nodes, variables, files and checksums."
+        ]
+      }
+    },
+    {
+      "id": "environment_agency_time_stamped_lidar",
+      "name": "Environment Agency time-stamped DTM LiDAR tiles",
+      "role": "Default independent topographic validation and representative foreshore profiles.",
+      "provider": "Environment Agency",
+      "source": {
+        "url": "https://www.data.gov.uk/dataset/8275e71e-1516-42a1-bb0c-4fa73807fe2b/lidar-dtm-time-stamped-tiles",
+        "access_route": "Environment Agency Survey Data Catalogue",
+        "source_version": null,
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "25 cm, 50 cm, 1 m or 2 m depending on survey; record every tile's raster resolution",
+        "temporal_coverage": "Survey dependent; record exact flight dates and reserve independent surveys explicitly"
+      },
+      "licensing": {
+        "licence": "Open Government Licence v3.0 as identified by the catalogue licence information",
+        "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        "review_status": "verified_for_named_catalogue",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "© Environment Agency copyright and/or database right 2020. All rights reserved.",
+      "transformation_history": [
+        "Select time-stamped tiles and preserve survey dates.",
+        "Derive validation contours and representative profiles in the project CRS and vertical datum."
+      ],
+      "publication": {
+        "raw_redistribution": "not_in_repository",
+        "derived_output_status": "allowed_after_tile_metadata_and_attribution_check",
+        "release_ready": false,
+        "blockers": [
+          "Record every selected survey, tile, resolution, flight date, download date and checksum.",
+          "Recheck the attribution packaged with the exact download."
+        ]
+      }
+    },
+    {
+      "id": "east_riding_monitoring_surveys",
+      "name": "East Riding coastal monitoring LiDAR or profiles",
+      "role": "Optional additional validation where access and licence permit.",
+      "provider": "East Riding of Yorkshire Council or the named survey originator",
+      "source": {
+        "url": "https://www.eastriding.gov.uk/",
+        "access_route": "Not selected",
+        "source_version": null,
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Unknown until an epoch is selected",
+        "temporal_coverage": "Verify separately for every survey epoch"
+      },
+      "licensing": {
+        "licence": "Not yet verified",
+        "url": "https://www.eastriding.gov.uk/",
+        "review_status": "not_cleared",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Not yet defined; copy the required credit from each selected epoch's terms or written permission.",
+      "transformation_history": [],
+      "publication": {
+        "raw_redistribution": "not_cleared",
+        "derived_output_status": "not_cleared",
+        "release_ready": false,
+        "blockers": [
+          "Obtain and save the exact access, reuse, attribution and redistribution terms for every selected epoch.",
+          "Do not publish source files or detailed derivatives before the relevant epoch is cleared."
+        ]
+      }
+    },
+    {
+      "id": "cefas_wavenet_hornsea",
+      "name": "Hornsea directional WaveRider observations",
+      "role": "Validation or bias check for the wave reanalysis.",
+      "provider": "Cefas WaveNet and the station's named data owner",
+      "source": {
+        "url": "https://www.cefas.co.uk/data-and-publications/wavenet/data-policy/",
+        "access_route": "WaveNet station download after checking Advanced Information",
+        "source_version": null,
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Hornsea station; exact coordinates pending",
+        "temporal_coverage": "Pending station record"
+      },
+      "licensing": {
+        "licence": "Station-specific WaveNet category not yet verified",
+        "url": "https://www.cefas.co.uk/data-and-publications/wavenet/data-policy/",
+        "review_status": "not_cleared",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Not yet defined; use the Hornsea station owner and restriction shown in WaveNet Advanced Information.",
+      "transformation_history": [],
+      "publication": {
+        "raw_redistribution": "not_cleared",
+        "derived_output_status": "not_cleared",
+        "release_ready": false,
+        "blockers": [
+          "Record whether the Hornsea station is OGL, non-commercial academic use only, or view-only, plus its owner and attribution."
+        ]
+      }
+    },
+    {
+      "id": "bodc_regional_tide_gauges",
+      "name": "BODC regional tide-gauge observations",
+      "role": "Validation of modelled water levels.",
+      "provider": "British Oceanographic Data Centre and the named data originator",
+      "source": {
+        "url": "https://www.bodc.ac.uk/data/documents/nodb/267795/",
+        "access_route": "BODC request or download with its data schedule",
+        "source_version": null,
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Selected regional gauges; stations pending",
+        "temporal_coverage": "Pending station selection"
+      },
+      "licensing": {
+        "licence": "BODC Data Licence Agreement plus source-specific data schedule",
+        "url": "https://www.bodc.ac.uk/data/documents/nodb/267795/",
+        "review_status": "verify_selected_records",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "This study uses data from [source, organisation or programme], provided by the British Oceanographic Data Centre and funded by [funding body].",
+      "transformation_history": [],
+      "publication": {
+        "raw_redistribution": "requires_prior_bodc_consent",
+        "derived_output_status": "verify_data_schedule_before_publication",
+        "release_ready": false,
+        "blockers": [
+          "Select gauges and preserve the applicable licence, data schedule, originator, funder, retrieval date and checksums.",
+          "Confirm whether intended derived values may be published; do not pass source data to third parties without consent."
+        ]
+      }
+    },
+    {
+      "id": "bgs_open_covariates",
+      "name": "British Geological Survey physical covariates",
+      "role": "Geology or sediment covariates selected during later workflow stages.",
+      "provider": "British Geological Survey",
+      "source": {
+        "url": "https://www.bgs.ac.uk/legal-and-policy/terms-of-use/",
+        "access_route": "An explicitly open BGS OpenGeoscience product; exact product not selected",
+        "source_version": null,
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Unknown until a product is selected",
+        "temporal_coverage": "Unknown until a product is selected"
+      },
+      "licensing": {
+        "licence": "Open Government Licence only if confirmed by the selected product metadata",
+        "url": "https://www.bgs.ac.uk/legal-and-policy/terms-of-use/",
+        "review_status": "product_not_selected",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Contains British Geological Survey materials ©NERC [year].",
+      "transformation_history": [],
+      "publication": {
+        "raw_redistribution": "not_cleared_until_product_selected",
+        "derived_output_status": "not_cleared_until_product_selected",
+        "release_ready": false,
+        "blockers": [
+          "Select a product whose own metadata explicitly confirms OGL reuse and record its version, year, resolution, coverage, retrieval date and checksum.",
+          "Do not substitute premium or education-licensed BGS data."
+        ]
+      }
+    },
+    {
+      "id": "nearshore_bathymetry",
+      "name": "Nearshore bathymetry",
+      "role": "Support representative foreshore profiles and slope interpretation.",
+      "provider": "Not selected",
+      "source": {
+        "url": null,
+        "access_route": "Not selected",
+        "source_version": null,
+        "download_date": null,
+        "checksum": null
+      },
+      "coverage": {
+        "spatial_resolution": "Unknown until a product is selected",
+        "temporal_coverage": "Unknown until a product is selected"
+      },
+      "licensing": {
+        "licence": "Not yet verified",
+        "url": null,
+        "review_status": "product_not_selected",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "Not yet defined; use the selected product's required wording.",
+      "transformation_history": [],
+      "publication": {
+        "raw_redistribution": "not_cleared",
+        "derived_output_status": "not_cleared",
+        "release_ready": false,
+        "blockers": [
+          "Select an openly licensed product that permits the intended GitHub workflow and derived outputs, then complete this record before use."
+        ]
+      }
+    }
+  ]
+}

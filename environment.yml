@@ -1,0 +1,115 @@
+# Analysis environment for the Holderness shoreline change project.
+#
+# This environment does NOT run CoastSat. CoastSat extraction runs in a separate
+# `coastsat310` environment, pinned to Python 3.10 and an older stack by its
+# pretrained classifiers. The two communicate only through files on disk
+# (GeoJSON geometry, metadata JSON and CSV tables), so nothing here needs to
+# match CoastSat's versions.
+#
+# Pinning strategy:
+#   - Exact pins on packages the scientific results depend on: geometry
+#     operations, statistics, tide models. A change in shapely or geopandas can
+#     silently alter the reference shoreline geometry, so these are recorded
+#     exactly and checked by the regression test.
+#   - Lower bounds on tooling (notebooks, progress bars, table formatting) where
+#     the version cannot affect a result.
+#   - Versions below are those resolved on osx-arm64, August 2026.
+#
+# Single channel by design. Mixing conda-forge with defaults is what breaks
+# geospatial stacks - the Python bindings expect conda-forge's C libraries.
+
+name: holderness-bnn
+
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - python=3.11.15
+
+  # --- core numerics (exact: results depend on these) ---
+  - numpy=2.4.6
+  - pandas=2.3.3
+  - scipy=1.17.1
+
+  # --- geospatial (exact: reference shoreline geometry depends on these) ---
+  # geopandas>=1.0 required for gpd.list_layers
+  # shapely>=2.0 required for shapely 2 API (substring, union_all, .geoms)
+  - geopandas=1.1.3
+  - shapely=2.1.2
+  - pyproj=3.7.2
+  - pyogrio=0.12.1        # used directly for list_layers
+  - fiona=1.10.1
+  - gdal=3.12.3
+  - rasterio=1.4.4
+  - rioxarray=0.19.0
+  - cartopy=0.25.0
+
+  # --- gridded data (Copernicus Marine waves, tide model output) ---
+  - xarray=2026.4.0
+  - netcdf4=1.7.4
+  - h5netcdf=1.8.1
+  - cfgrib
+  - dask=2026.3.0
+  - zarr=3.1.6
+  - pyarrow=24.0.0
+
+  # s3fs pulls aiobotocore; keep its botocore window aligned with boto3 below
+  - s3fs=2026.6.0
+  - aiobotocore=3.8.0
+
+  # --- imagery / detection support ---
+  - scikit-learn=1.8.0
+  - scikit-image=0.26.0
+  - astropy=7.2.0
+
+  # --- statistics ---
+  - statsmodels>=0.14
+
+  # --- tides ---
+  - pyfes=2026.5.2
+  - pytmd=3.0.9
+  - timescale=0.1.2
+
+  # --- modelling ---
+  - pytorch=2.10.0
+
+  # --- plotting ---
+  - matplotlib=3.10.9
+  - ipympl>=0.9
+
+  # --- notebooks and tooling (bounds only) ---
+  - jupyterlab>=4.5
+  - ipykernel>=7.0
+  - ipywidgets>=8.1
+  - nb_conda_kernels
+  - pyyaml>=6.0
+  - pytz>=2026.1
+  - tqdm>=4.67
+  - tabulate>=0.10
+
+  # --- testing ---
+  - pytest>=9.0
+
+  - pip
+  - pip:
+      - cdsapi>=0.7
+      - earthengine-api==1.7.24
+      - boto3==1.43.46
+      - botocore==1.43.46
+      - copernicusmarine==2.4.1
+      - properscoring==0.1
+
+# --- Rebuilding and recording the environment --------------------------------
+#
+# Build from scratch so packages left by an older specification cannot survive:
+#
+#   conda env create -f environment.yml
+#   conda run -n holderness-bnn python -m pip install -e .
+#   conda run -n holderness-bnn python scripts/check-environment.py analysis
+#   conda run -n holderness-bnn python -m pip check
+#   conda run -n holderness-bnn python -m pytest
+#
+# `environment.lock.yml` records the complete tested solve without build strings
+# or a machine-specific prefix. The editable project install is deliberately not
+# part of either environment file.
