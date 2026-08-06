@@ -17,10 +17,10 @@ def transects(reference_line):
     return geometry.build_transects(
         reference_line,
         epsg=config.EPSG,
-        spacing=config.TRANSECT_SPACING,
-        landward=config.TRANSECT_LANDWARD,
-        seaward=config.TRANSECT_SEAWARD,
-        window=config.TRANSECT_NORMAL_WINDOW,
+        spacing=config.MASTER_TRANSECT_SPACING_M,
+        landward=config.INITIAL_TRANSECT_LANDWARD_M,
+        seaward=config.INITIAL_TRANSECT_SEAWARD_M,
+        window=config.TRANSECT_NORMAL_WINDOW_M,
     )
 
 
@@ -38,7 +38,8 @@ def test_master_transects_use_chainage_ids_and_fixed_extents(transects):
 
 @pytest.mark.parametrize(
     'spacing,expected',
-    [(spacing, 1000 // spacing) for spacing in config.TRANSECT_SUBSET_SPACINGS],
+    [(spacing, 1000 // spacing)
+     for spacing in config.TRANSECT_SUBSET_SPACINGS_M],
 )
 def test_chainage_subsets_are_deterministic(transects, spacing, expected):
     subset = geometry.subset_transects(transects, spacing)
@@ -80,7 +81,7 @@ def test_os_seed_is_explicitly_provisional(reference_line):
 def test_coastsat_adapters_do_not_change_authoritative_geometry(transects,
                                                                  reference_line):
     reference = coastsat_api.reference_line_to_array(
-        reference_line, spacing=config.COASTSAT_REFERENCE_STEP
+        reference_line, spacing=config.COASTSAT_REFERENCE_STEP_M
     )
     coast_sat_transects = coastsat_api.transects_to_dict(transects)
 

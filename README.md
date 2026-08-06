@@ -1,5 +1,8 @@
 # holderness-bnn-long-term-shoreline-change
-Spatial prediction of long-term satellite-derived waterline position change rates along the Holderness Coast using physical covariates and an approximate Bayesian neural network
+
+Spatial prediction of long-term satellite-derived waterline position change
+rates along the Holderness Coast using physical covariates and an approximate
+Bayesian neural network.
 
 ## CoastSat dependency
 
@@ -12,3 +15,15 @@ Verify a sibling checkout with:
 ```bash
 git -C ../CoastSat rev-parse HEAD
 ```
+
+## Local settings
+
+The repository does not store credentials, local CoastSat paths or a personal
+Google Earth Engine project ID. Supply the project ID to a script with
+`--gee-project`, or set it for the current shell:
+
+```bash
+export HOLDERNESS_GEE_PROJECT=your-google-cloud-project-id
+```
+
+Authentication remains local to each user.

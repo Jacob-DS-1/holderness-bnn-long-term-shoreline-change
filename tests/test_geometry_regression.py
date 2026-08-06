@@ -8,10 +8,12 @@ from holderness import config, geometry
 
 @pytest.fixture(scope='session')
 def boundaries():
-    if not config.GML_PATH.exists():
-        pytest.skip(f'source GML not present at {config.GML_PATH}')
+    if not config.OS_TIDAL_BOUNDARY_PATH.exists():
+        pytest.skip(f'source GML not present at {config.OS_TIDAL_BOUNDARY_PATH}')
     return geometry.load_os_tidal_boundaries(
-        config.GML_PATH, config.LAYER, config.EPSG
+        config.OS_TIDAL_BOUNDARY_PATH,
+        config.OS_TIDAL_BOUNDARY_LAYER,
+        config.EPSG,
     )
 
 
@@ -20,7 +22,7 @@ def boundary_lines(boundaries):
     frames, _ = boundaries
     return {
         name: geometry.build_boundary_line(
-            frame, config.ANCHOR_SOUTH, config.ANCHOR_NORTH
+            frame, config.OS_ANCHOR_SOUTH, config.OS_ANCHOR_NORTH
         )
         for name, frame in frames.items()
     }
@@ -29,7 +31,7 @@ def boundary_lines(boundaries):
 @pytest.fixture(scope='session')
 def os_seed(boundary_lines):
     return geometry.build_os_seed(
-        boundary_lines['mhw'], boundary_lines['mlw'], config.OS_SEED_STEP
+        boundary_lines['mhw'], boundary_lines['mlw'], config.OS_SEED_STEP_M
     )
 
 
@@ -78,6 +80,6 @@ def test_short_component_guard(boundaries):
     frames, _ = boundaries
     with pytest.raises(ValueError, match='longest component'):
         geometry.build_boundary_line(
-            frames['mhw'], config.ANCHOR_SOUTH, config.ANCHOR_NORTH,
+            frames['mhw'], config.OS_ANCHOR_SOUTH, config.OS_ANCHOR_NORTH,
             min_component_length=10**9,
         )
