@@ -219,12 +219,14 @@ __marimo__/
 
 # --- project ---
 .DS_Store
+~$*.xlsx
 .virtual_documents/
 anaconda_projects/
 
 # Data and outputs (large, regenerable, or both)
 data/
-outputs/
+outputs/*
+!outputs/README.md
 runs/
 *.gml
 *.gfs
