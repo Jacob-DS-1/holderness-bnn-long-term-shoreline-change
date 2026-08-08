@@ -30,8 +30,8 @@ def main():
     )
 
     print(candidates.groupby(['sensor', 'decade', 'season']).size().to_string())
-    print(f'\n{len(candidates)} preliminary pilot candidates')
-    print('water level, defence and morphology labels are still required')
+    print(f'\n{len(candidates)} preliminary scene candidates')
+    print('water-level labelling and local-sector selection are still required')
     if args.dry_run:
         return
 
@@ -40,12 +40,14 @@ def main():
     summary_path = args.output_dir / 'pilot-candidate-summary.json'
     candidates.to_csv(candidate_path, index=False)
     summary_path.write_text(json.dumps({
-        'status': 'candidate_pool_not_frozen',
+        'status': pilot.SCENE_CANDIDATE_POOL_STATUS,
         'selection_seed': args.seed,
         'per_stratum': args.per_stratum,
         'candidate_count': len(candidates),
         'selection_strata': ['roi_id', 'sensor', 'decade', 'season'],
-        'pending_labels': list(pilot.PENDING_LABEL_COLUMNS),
+        'pending_scene_labels': list(pilot.PENDING_SCENE_LABEL_COLUMNS),
+        'pending_pilot_steps': list(pilot.PENDING_PILOT_STEPS),
+        'spatial_context_unit': 'local_sector_not_roi',
     }, indent=2) + '\n')
 
     print(f'wrote {candidate_path}')

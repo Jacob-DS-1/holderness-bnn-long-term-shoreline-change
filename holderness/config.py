@@ -32,8 +32,11 @@ POSITIVE_CROSS_SHORE_DIRECTION = 'seaward'
 
 LANDSAT_SENSORS = ('L5', 'L7', 'L8', 'L9')
 SENTINEL_SENSORS = ('S2',)
-LANDSAT_DATES = ('1990-01-01', '2024-12-31')
-SENTINEL_DATES = ('2015-01-01', '2024-12-31')
+# Earth Engine ``filterDate`` excludes its end date. These bounds therefore
+# include every acquisition through 2024-12-31 without extending the study
+# period into 2025.
+LANDSAT_DATES = ('1990-01-01', '2025-01-01')
+SENTINEL_DATES = ('2015-01-01', '2025-01-01')
 
 TARGET_MSL_PERIOD = (1991, 2020)
 TARGET_VERTICAL_DATUM = 'ODN'
@@ -54,6 +57,10 @@ ROI_MAX_AREA_M2 = 25_000_000
 COASTSAT_ALONG_DIST_M = 25
 COASTSAT_MIN_SHORELINE_POINTS = 3
 LANDSAT_MAX_GEOMETRIC_RMSE_M = 10
+
+# The pinned CoastSat ``get_image_info`` helper removes scenes above this
+# provider scene-wide cloud percentage before returning their metadata.
+COASTSAT_AVAILABILITY_MAX_CLOUD_COVER_PCT = 95
 
 
 # Provisional OS geometry seed ------------------------------------------------
@@ -89,10 +96,32 @@ WAVE_PRODUCT = 'NWSHELF_REANALYSIS_WAV_004_015'
 TOPOGRAPHIC_VALIDATION_SOURCE = 'Environment Agency time-stamped LiDAR'
 
 
-# Pilot settings not yet frozen ----------------------------------------------
+# Pilot settings and retrieval-date decision ---------------------------------
 
-PILOT_STATUS = 'not_started'
+PILOT_STATUS = 'retrieval_candidates_selected'
 PILOT_RULES_FROZEN = False
+
+# Design 1 was approved on 2026-08-08 as the controlled imagery-retrieval
+# candidate set. These are not accepted extraction scenes; local visual QC is
+# still required before any shoreline is extracted.
+PILOT_RETRIEVAL_DESIGN_ID = 1
+PILOT_RETRIEVAL_SCENE_IDS = (
+    'LANDSAT/LT05/C02/T1_TOA/LT05_202022_19981019',
+    'LANDSAT/LT05/C02/T1_TOA/LT05_202022_20060416',
+    'LANDSAT/LT05/C02/T1_TOA/LT05_202022_20110820',
+    'LANDSAT/LE07/C02/T1_TOA/LE07_202022_19990912',
+    'LANDSAT/LE07/C02/T1_TOA/LE07_202022_20011222',
+    'LANDSAT/LE07/C02/T1_TOA/LE07_202022_20180511',
+    'LANDSAT/LE07/C02/T1_TOA/LE07_203022_20220615',
+    'LANDSAT/LC08/C02/T1_TOA/LC08_202022_20171108',
+    'LANDSAT/LC08/C02/T1_TOA/LC08_202022_20190215',
+    'LANDSAT/LC08/C02/T1_TOA/LC08_202022_20190725',
+    'LANDSAT/LC08/C02/T1_TOA/LC08_202022_20240519',
+    'LANDSAT/LC09/C02/T1_TOA/LC09_202022_20220607',
+    'LANDSAT/LC09/C02/T1_TOA/LC09_202022_20230525',
+    'LANDSAT/LC09/C02/T1_TOA/LC09_202022_20240916',
+)
+PILOT_RETRIEVAL_MANIFEST = PILOT_DATA / 'pilot-retrieval-manifest.json'
 
 CLASSIFIER_CANDIDATES = ('default', 'dark')
 LOW_WATER_FILTER_CANDIDATES = (
@@ -109,6 +138,20 @@ SELECTED_LOW_WATER_FILTER = None
 # the smoothed mid-record reference line has been constructed.
 TRANSECT_NORMAL_WINDOW_M = 250
 PILOT_CANDIDATE_SEED = 20260806
+
+# Approved pilot-only water-level sampling convention. FES is evaluated 3 km
+# along the provisional seed's seaward normal from each core-sector midpoint.
+# GTSM stations are the nearest distributed output stations to those sector
+# midpoints. Recalculate both after the satellite-derived reference is fixed.
+PILOT_FES_OFFSHORE_DISTANCE_M = 3_000
+PILOT_GTSM_STATION_IDS = {
+    'HOL_PILOT_WITHERNSEA_TRANSITION': 1277,
+    'HOL_PILOT_CLIFF_COMPARISON_CANDIDATE': 1275,
+    'HOL_PILOT_BARMSTON_OUTLET': 1273,
+}
+PILOT_WATER_LEVEL_GEOMETRY_STATUS = (
+    'pilot_only_from_undated_os_geometry_seed'
+)
 
 
 # Scientific values not yet resolved -----------------------------------------

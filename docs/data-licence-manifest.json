@@ -126,18 +126,19 @@
     },
     {
       "id": "aviso_fes2022",
-      "name": "FES2022 global ocean tide model",
-      "role": "Astronomical tide at satellite acquisition times.",
+      "name": "FES2022b global ocean and load tide model",
+      "role": "Astronomical geocentric tide (ocean tide plus loading tide) at satellite acquisition times.",
       "provider": "CNES / LEGOS / NOVELTIS / CLS, distributed by AVISO+",
       "source": {
         "url": "https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes.html",
         "access_route": "Registered AVISO+ account under the licence accepted by the individual user",
-        "source_version": "FES2022b, Version 2024; exact distributed grid choice to be recorded",
-        "download_date": null,
-        "checksum": null
+        "source_version": "FES2022b, Version 2024; 1/30° non-extrapolated Cartesian ocean_tide_20241025 and load_tide grids, 34 constituent NetCDF files per component",
+        "download_date": "2026-08-07",
+        "checksum": "sha256:87b64875d77fdd3331005742e8c59aeb1122d12db86b365965202a35177c5f22",
+        "checksum_method": "SHA-256 of the sorted 68-line per-file SHA-256 manifest, with paths relative to data/raw/fes2022b and lines formatted as '<digest>  <relative-path>\\n'"
       },
       "coverage": {
-        "spatial_resolution": "1/30° x 1/30° distributed grids; record extrapolated or non-extrapolated choice",
+        "spatial_resolution": "1/30° x 1/30° non-extrapolated Cartesian ocean and load grids; final offshore sampling locations remain to be selected",
         "temporal_coverage": "Harmonic tide model evaluated at 1990-2024 image acquisition times"
       },
       "licensing": {
@@ -148,6 +149,8 @@
       },
       "attribution": "The FES2022 Tide product was funded by CNES, produced by LEGOS, NOVELTIS and CLS and made freely available by AVISO. CNES (2024), FES2022 (Finite Element Solution) Tidal model, Version 2024, https://doi.org/10.24400/527896/A01-2024.004.",
       "transformation_history": [
+        "Downloaded and decompressed the AVISO+ FES2022b non-extrapolated ocean_tide_20241025 and load_tide archives to 34 NetCDF constituent grids per component on 2026-08-07.",
+        "Configured an ignored machine-local YAML from CNES aviso-fes tag 2026.5.2 (commit 0765cb776fb7b8eab294579ac2efd07b612df1c2; upstream YAML SHA-256 176d46dcde380aadc44fa5be5b9a511f84b738349fd0286ea02f013d49acb60a) and smoke-tested finite ocean and load predictions with PyFES 2026.5.2, reproducing their geocentric sum through pinned CoastSat; the offshore smoke point is an implementation check, not a selected scientific sampling node.",
         "Evaluate astronomical tide at the selected offshore point and exact image acquisition time.",
         "Transform to the documented common vertical reference."
       ],
@@ -156,45 +159,51 @@
         "derived_output_status": "derived_values_only_after_terms_check_and_attribution",
         "release_ready": false,
         "blockers": [
-          "Save the accepted AVISO+ licence version, retrieval date, selected files, checksums and prediction settings.",
+          "Preserve the exact AVISO+ licence version accepted for this download.",
+          "Record final offshore sampling locations and production prediction settings.",
           "Confirm that the intended level of tide-derived detail can be published; never publish raw FES grids."
         ]
       }
     },
     {
       "id": "copernicus_cds_gtsm_v3",
-      "name": "Global Tide and Surge Model v3 reanalysis",
-      "role": "Annual mean-sea-level anomalies and storm-surge residuals.",
+      "name": "Global Tide and Surge Model v3 water-level time series",
+      "role": "Annual mean-sea-level anomalies and 10-minute storm-surge residuals.",
       "provider": "Copernicus Climate Change Service / Deltares",
       "source": {
         "url": "https://cds.climate.copernicus.eu/datasets/sis-water-level-change-timeseries-cmip6",
         "access_route": "Copernicus Climate Data Store",
-        "source_version": "GTSM v3.0; DOI 10.24381/cds.a6d42d60",
-        "download_date": null,
-        "checksum": null
+        "source_version": "GTSM model v3.0; storm-surge residual ERA5 reanalysis CDS v3 at 10-minute resolution; annual mean sea level CDS historical/future v1; DOI 10.24381/cds.a6d42d60",
+        "download_date": "2026-08-07",
+        "checksum": "sha256:aba2f2fe613736b2ead8498f3884d666267e05ebb7bd233bf581f4cc850e8b4b",
+        "checksum_method": "SHA-256 of the 96-line per-archive SHA-256 manifest covering 94 surge and two annual-MSL ZIPs, sorted by archive filename with lines formatted as '<digest>  <archive_filename>\\n'"
       },
       "coverage": {
-        "spatial_resolution": "Approximately 1.25 km coastal resolution in Europe; record selected nodes",
-        "temporal_coverage": "Reanalysis 1950-2024; project subset 1990-2024"
+        "spatial_resolution": "The GTSM computational grid is approximately 1.25 km at European coasts; the distributed time-series output stations are approximately 0.1 degrees apart. Pilot stations 1277, 1275 and 1273 are provisional selections tied to the undated OS geometry seed.",
+        "temporal_coverage": "Frozen pilot subset: 94 monthly 10-minute surge archives containing all 110 candidate scene UTCs from 1990-2024, plus historical annual MSL for 1990-2014 and future annual MSL for 2015-2024"
       },
       "licensing": {
         "licence": "Creative Commons Attribution 4.0",
         "url": "https://creativecommons.org/licenses/by/4.0/",
         "review_status": "verified_for_named_product",
-        "reviewed_on": "2026-08-06"
+        "reviewed_on": "2026-08-07"
       },
-      "attribution": "Global sea level change time series from 1950 to 2050 derived from reanalysis and high resolution CMIP6 climate projections. Copernicus Climate Change Service, DOI: 10.24381/cds.a6d42d60 (accessed [date]).",
+      "attribution": "Global sea level change time series from 1950 to 2050 derived from reanalysis and high resolution CMIP6 climate projections. Copernicus Climate Change Service, DOI: 10.24381/cds.a6d42d60 (accessed 2026-08-07).",
       "transformation_history": [
-        "Select and record coastal model nodes used for Holderness.",
-        "Separate annual mean-sea-level anomalies and storm-surge residuals without double-counting tide.",
-        "Transform components to the documented common vertical reference."
+        "Retrieved and checksum-validated the 94 water-blind pilot months of GTSM v3 reanalysis surge at 10-minute resolution, without spatial subsetting or hourly substitution.",
+        "Retrieved and checksum-validated annual mean sea level as the only supported CDS combination: historical v1 for 1990-2014 and future v1 for 2015-2024; the underlying hydrodynamic model remains GTSM v3.0.",
+        "Use provisional pilot stations 1277, 1275 and 1273, selected as the nearest distributed GTSM stations to the approved core-sector midpoints on the undated OS geometry seed.",
+        "Interpolate surge to exact scene UTC only when both surrounding 10-minute values are finite at every required station; otherwise exclude the complete scene without filling or changing station.",
+        "Preserve annual MSL relative to its native 1986-2005 period and recenter each station series to 1991-2020 without treating this as conversion to ODN or smoothing the 2014-2015 experiment boundary."
       ],
       "publication": {
         "raw_redistribution": "not_in_repository",
         "derived_output_status": "allowed_with_attribution",
         "release_ready": false,
         "blockers": [
-          "Confirm the exact CDS dataset version and variables, then record access date, selected nodes, files and checksums."
+          "Recalculate and freeze final production nodes after the satellite-derived reference shoreline replaces the provisional OS geometry seed.",
+          "Publish the numerical fixed 1991-2020 local mean-sea-level surface in ODN before describing vertically corrected shorelines as ODN-referenced.",
+          "Retain the source-metadata limitation describing 1950-2016 as observation-constrained and 2016-2060 as an RCP8.5 ensemble mean rather than an ERA5 annual-MSL reanalysis."
         ]
       }
     },
@@ -231,6 +240,42 @@
         "release_ready": false,
         "blockers": [
           "Record access date, exact dataset version, selected nodes, variables, files and checksums."
+        ]
+      }
+    },
+    {
+      "id": "environment_agency_aims_spatial_flood_defences",
+      "name": "AIMS Spatial Flood Defences (including standardised attributes)",
+      "role": "Current defence geometry and coarse defence type for pilot stratification and later defence covariates.",
+      "provider": "Environment Agency",
+      "source": {
+        "url": "https://environment.data.gov.uk/dataset/8e5be50f-d465-11e4-ba9a-f0def148f590",
+        "access_route": "Defra Data Services Platform full national GeoPackage download",
+        "source_version": "AfA345; snapshot downloaded 2026-08-06",
+        "download_date": "2026-08-06",
+        "checksum": "sha256:c94a53096ae333d0c7f74c76e6e6c2c66e7835e1ab111b8235db1690f18a2d22",
+        "checksum_file": "AIMS_Spatial_Flood_Defences_inc_standardised_attributes.gpkg"
+      },
+      "coverage": {
+        "spatial_resolution": "Linear defence geometry supplied in EPSG:27700",
+        "temporal_coverage": "Current-state snapshot only; not a defence-history record"
+      },
+      "licensing": {
+        "licence": "Open Government Licence v3.0",
+        "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        "review_status": "verified_for_named_product",
+        "reviewed_on": "2026-08-06"
+      },
+      "attribution": "© Environment Agency copyright and/or database right 2020. All rights reserved.",
+      "transformation_history": [],
+      "publication": {
+        "raw_redistribution": "not_in_repository",
+        "derived_output_status": "allowed_with_OGL_attribution_after_provenance_completion",
+        "release_ready": false,
+        "blockers": [
+          "Record the exact snapshot download date, chosen format and checksum.",
+          "Cross-check AIMS against East Riding's named defended frontages.",
+          "Do not infer construction or extension dates from the current geometry."
         ]
       }
     },

@@ -3,6 +3,7 @@
 import json
 
 import pandas as pd
+import pytest
 from shapely.geometry import LineString
 
 from holderness import availability, config, geometry, pilot
@@ -44,6 +45,31 @@ def landsat_image(scene_id='LANDSAT/TEST/SCENE_1', rmse=7.5):
             'CLOUD_COVER': 0,
             'GEOMETRIC_RMSE_MODEL': rmse,
         },
+    }
+
+
+def pilot_scene_row(scene_id, roi_id, sensor='L8'):
+    return {
+        'stream': 'landsat',
+        'roi_id': roi_id,
+        'sensor': sensor,
+        'source_scene_id': scene_id,
+        'source_product_id': f'{scene_id}_PRODUCT',
+        'system_index': scene_id,
+        'acquisition_time_utc': '2020-06-01T10:30:00Z',
+        'acquisition_year': 2020,
+        'decade': '2020s',
+        'season': 'JJA',
+        'meteorological_quarter': '2020-JJA',
+        'gee_collection': 'LANDSAT/LC08/C02/T1_TOA',
+        'collection_version': 'C02',
+        'wrs_path': 202,
+        'wrs_row': 22,
+        'cloud_cover_pct': 5.0,
+        'geometric_rmse_m': 7.5,
+        'primary_geometry_eligible': True,
+        'geometry_exclusion_reason': '',
+        'metadata_retrieved_at_utc': '2026-08-06T12:00:00Z',
     }
 
 
@@ -114,6 +140,17 @@ def test_quarterly_and_summary_manifests(tmp_path):
     assert quarters.iloc[0].scene_count == 2
     assert quarters.iloc[0].unique_scene_count == 2
     assert summary['unique_scene_ids'] == 2
+    assert summary['primary_geometry_eligible_unique_scene_ids'] == 2
+    assert summary['catalog_prefilter']['maximum_inclusive'] == 95
+    sensor_coverage = summary['coverage']['by_sensor']['L8']
+    assert sensor_coverage['all_candidates']['unique_scene_ids'] == 2
+    assert sensor_coverage['primary_geometry_eligible'][
+        'populated_meteorological_quarters'
+    ] == 1
+    roi_coverage = summary['coverage']['by_roi']['HOL_ROI_01']
+    assert roi_coverage['all_candidates']['first_acquisition_time_utc'] == (
+        '2020-12-15T10:30:00Z'
+    )
 
 
 def test_pilot_pool_is_reproducible_and_excludes_ineligible_scenes():
@@ -142,5 +179,54 @@ def test_pilot_pool_is_reproducible_and_excludes_ineligible_scenes():
     second = pilot.select_candidate_pool(scenes, per_stratum=1, seed=42)
     assert list(first.source_scene_id) == list(second.source_scene_id)
     assert 'C' not in set(first.source_scene_id)
-    assert first.iloc[0].pilot_status == 'candidate_pending_labels'
-    assert set(pilot.PENDING_LABEL_COLUMNS).issubset(first.columns)
+    assert pilot.PENDING_SCENE_LABEL_COLUMNS == ('water_level_band',)
+    assert first['water_level_band'].eq('').all()
+    assert set(first['pilot_status']) == {pilot.SCENE_CANDIDATE_POOL_STATUS}
+    roi_context_fields = {
+        'defence_status',
+        'coastal_regime',
+        'morphology_notes',
+    }
+    assert roi_context_fields.isdisjoint(first.columns)
+
+
+def test_scene_catalog_collapses_roi_rows_and_attaches_sector_coverage():
+    scenes = pd.DataFrame([
+        pilot_scene_row('A', 'HOL_ROI_02'),
+        pilot_scene_row('A', 'HOL_ROI_01'),
+        pilot_scene_row('B', 'HOL_ROI_01'),
+    ])
+    sectors = pd.DataFrame([
+        {
+            'pilot_sector_id': 'CORE',
+            'role': 'core_candidate',
+            'intersecting_roi_ids': 'HOL_ROI_01|HOL_ROI_02',
+        },
+        {
+            'pilot_sector_id': 'BACKUP',
+            'role': 'backup_candidate',
+            'intersecting_roi_ids': 'HOL_ROI_02',
+        },
+    ])
+
+    catalog = pilot.collapse_scene_coverage(scenes)
+    covered = pilot.add_sector_coverage(catalog, sectors)
+    scene_a = covered.set_index('source_scene_id').loc['A']
+    scene_b = covered.set_index('source_scene_id').loc['B']
+
+    assert len(catalog) == 2
+    assert scene_a.covered_roi_ids == 'HOL_ROI_01|HOL_ROI_02'
+    assert scene_a.covered_roi_count == 2
+    assert scene_a.covered_sector_ids == 'CORE|BACKUP'
+    assert bool(scene_a.covers_all_required_sectors) is True
+    assert bool(scene_b.covers_all_required_sectors) is False
+
+
+def test_scene_catalog_rejects_inconsistent_metadata_across_rois():
+    scenes = pd.DataFrame([
+        pilot_scene_row('A', 'HOL_ROI_01', sensor='L8'),
+        pilot_scene_row('A', 'HOL_ROI_02', sensor='L9'),
+    ])
+
+    with pytest.raises(ValueError, match='inconsistent metadata'):
+        pilot.collapse_scene_coverage(scenes)

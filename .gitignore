@@ -77,6 +77,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+notebooks/exploratory/
 
 # IPython
 profile_default/
@@ -235,6 +236,7 @@ runs/
 environment.before-update.yml
 
 # Local credentials and private keys
+.cdsapirc
 credentials/
 secrets/
 .earthengine/

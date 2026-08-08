@@ -17,14 +17,18 @@ The cleaned repository currently supports:
 - building overlapping imagery-availability regions;
 - planning or running metadata-only Landsat and Sentinel-2 availability
   queries; and
-- preparing a reproducible, editable Landsat pilot candidate pool after the
-  live availability manifest exists.
+- preparing a reproducible, editable Landsat pilot candidate pool;
+- recording reviewed local pilot sectors and contextual evidence; and
+- building exact-time FES2022 and GTSM v3 water-level evidence for the frozen
+  110-scene evaluation pool; and
+- freezing the approved 14-scene Design 1 retrieval-candidate set.
 
-It does not yet retrieve imagery, extract final shorelines, freeze the pilot,
-construct the mid-record reference shoreline or fit models. The next practical
-step is the live Landsat availability query, followed by review and completion
-of the pilot labels. Imagery retrieval should be added only after those inputs
-and rules are ready.
+It does not yet retrieve imagery, accept extraction scenes, extract final
+shorelines, construct the mid-record reference shoreline or fit models. The
+live Landsat availability query, contextual review, provisional water-level
+preparation and date-design decision are complete. Design 1 is approved only
+for controlled imagery retrieval followed by local visual QC; it does not
+authorise shoreline extraction.
 
 ## Repository map
 
@@ -92,14 +96,24 @@ conda run -n coastsat310 python scripts/03-check-image-availability.py \
   --stream landsat
 ```
 
+Earth Engine query end dates are exclusive, so the configured `2025-01-01` end
+includes acquisitions through 31 December 2024. The pinned CoastSat metadata
+helper removes scenes with provider scene-wide cloud cover above 95%; the
+result is therefore a coarsely filtered candidate catalog, not an unfiltered
+Earth Engine inventory. Local coastal cloud and all other acceptance decisions
+remain part of later visual QC.
+
 Credentials remain local. After the Landsat scene manifest exists, inspect the
-candidate pilot pool without writing it:
+candidate scene pool without writing it:
 
 ```bash
 conda run -n holderness-bnn python scripts/04-prepare-pilot.py --dry-run
 ```
 
 See [`scripts/README.md`](scripts/README.md) for outputs and operational notes.
+The availability ROIs are retrieval and coverage units, not scientific units
+for coast-wide defence or morphology labels. Spatial pilot context is recorded
+against short local sectors before sector--scene combinations are frozen.
 
 ## Working conventions
 
