@@ -115,6 +115,37 @@ def test_os_seed_role_and_unavailable_acquisition_date_are_explicit():
     )
 
 
+def test_fes_record_preserves_download_and_non_extrapolated_grid_choice():
+    datasets = {dataset["id"]: dataset for dataset in load_manifest()["datasets"]}
+    fes = datasets["aviso_fes2022"]
+
+    assert "non-extrapolated Cartesian" in fes["source"]["source_version"]
+    assert "ocean_tide_20241025" in fes["source"]["source_version"]
+    assert "load_tide" in fes["source"]["source_version"]
+    assert fes["source"]["download_date"] == "2026-08-07"
+    assert fes["source"]["checksum"].startswith("sha256:")
+    assert len(fes["source"]["checksum"]) == 71
+    assert fes["publication"]["release_ready"] is False
+    assert fes["publication"]["blockers"]
+
+
+def test_gtsm_record_distinguishes_surge_and_annual_msl_versions():
+    datasets = {dataset["id"]: dataset for dataset in load_manifest()["datasets"]}
+    gtsm = datasets["copernicus_cds_gtsm_v3"]
+
+    assert "reanalysis CDS v3" in gtsm["source"]["source_version"]
+    assert "historical/future v1" in gtsm["source"]["source_version"]
+    assert gtsm["source"]["download_date"] == "2026-08-07"
+    assert gtsm["source"]["checksum"].startswith("sha256:")
+    assert len(gtsm["source"]["checksum"]) == 71
+    assert "96-line" in gtsm["source"]["checksum_method"]
+    assert gtsm["publication"]["release_ready"] is False
+    assert any(
+        "satellite-derived reference" in blocker
+        for blocker in gtsm["publication"]["blockers"]
+    )
+
+
 def test_output_licence_is_conditional_on_source_clearance():
     policy = load_manifest()["repository_policy"]
 

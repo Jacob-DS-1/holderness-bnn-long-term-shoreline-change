@@ -69,7 +69,7 @@
     "id": "P012",
     "phase": "data",
     "kind": "fixed",
-    "item": "Use FES2022 for astronomical tide, GTSM v3 for annual mean-sea-level anomalies and storm-surge residuals, and keep all components in a documented common vertical reference."
+    "item": "Use FES2022 for astronomical tide, GTSM model v3.0 reanalysis v3 for 10-minute storm-surge residuals, and the GTSM model v3.0 annual mean-sea-level field supplied as CDS historical/future v1, preserving experiment and version provenance and a documented common vertical reference."
   },
   {
     "id": "P013",
@@ -117,7 +117,7 @@
     "id": "P020",
     "phase": "pilot",
     "kind": "fixed",
-    "item": "Stratify the pilot across Landsat missions, decades, seasons, water levels, defended and undefended sectors, exposed till, ords and other morphologically unusual settings."
+    "item": "Stratify the pilot across Landsat missions, decades, seasons, water levels, defended and undefended sectors, exposed till, ords and other morphologically unusual settings. The approved retrieval-candidate Design 1 contains 14 Landsat scenes (L5 3, L7 4, L8 4 and L9 3), covers every mission-specific observed decade, season and water-level pattern, and remains subject to local visual QC."
   },
   {
     "id": "P021",
@@ -141,7 +141,7 @@
     "id": "P024",
     "phase": "pilot",
     "kind": "fixed",
-    "item": "Reserve independent LiDAR surveys, dates or sectors from classifier and correction selection for final validation whenever the number of usable survey–image pairs permits."
+    "item": "Reserve independent LiDAR surveys, dates or sectors from classifier and correction selection for final validation whenever the number of usable survey–image pairs permits. The approved retrieval-candidate design uses two of the five available ±3-day LiDAR-linked scenes and reserves three for independent validation."
   },
   {
     "id": "P025",

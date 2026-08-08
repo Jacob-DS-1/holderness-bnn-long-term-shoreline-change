@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from holderness import coastsat_api
+from holderness import coastsat_api, config
 
 
 SCENE_COLUMNS = [
@@ -247,6 +247,51 @@ def quarterly_availability(scenes):
     ).reset_index(drop=True)
 
 
+def _coverage_summary(scenes):
+    """Return compact temporal coverage statistics for one scene table."""
+    if scenes.empty:
+        return {
+            'roi_scene_rows': 0,
+            'unique_scene_ids': 0,
+            'distinct_acquisition_years': 0,
+            'populated_meteorological_quarters': 0,
+            'first_acquisition_time_utc': None,
+            'last_acquisition_time_utc': None,
+        }
+
+    times = pd.to_datetime(
+        scenes['acquisition_time_utc'], utc=True, format='mixed'
+    )
+    return {
+        'roi_scene_rows': len(scenes),
+        'unique_scene_ids': int(scenes['source_scene_id'].nunique()),
+        'distinct_acquisition_years': int(
+            scenes['acquisition_year'].nunique()
+        ),
+        'populated_meteorological_quarters': int(
+            scenes['meteorological_quarter'].nunique()
+        ),
+        'first_acquisition_time_utc': times.min().isoformat().replace(
+            '+00:00', 'Z'
+        ),
+        'last_acquisition_time_utc': times.max().isoformat().replace(
+            '+00:00', 'Z'
+        ),
+    }
+
+
+def _grouped_coverage(scenes, column):
+    """Summarise all and geometrically eligible scenes by one dimension."""
+    result = {}
+    for value, group in scenes.groupby(column, sort=True):
+        eligible = group[group['primary_geometry_eligible']]
+        result[str(value)] = {
+            'all_candidates': _coverage_summary(group),
+            'primary_geometry_eligible': _coverage_summary(eligible),
+        }
+    return result
+
+
 def write_availability_manifests(scenes, output_dir, stream):
     """Write scene, quarterly and summary availability files."""
     output_dir = Path(output_dir)
@@ -260,12 +305,38 @@ def write_availability_manifests(scenes, output_dir, stream):
     scenes.to_csv(scene_path, index=False)
     quarters.to_csv(quarter_path, index=False)
 
+    eligible = scenes[scenes['primary_geometry_eligible']]
     summary = {
         'stream': stream,
         'scene_rows': len(scenes),
         'unique_scene_ids': int(scenes['source_scene_id'].nunique()),
+        'primary_geometry_eligible_scene_rows': len(eligible),
+        'primary_geometry_eligible_unique_scene_ids': int(
+            eligible['source_scene_id'].nunique()
+        ),
         'roi_count': int(scenes['roi_id'].nunique()),
         'sensors': sorted(scenes['sensor'].dropna().unique().tolist()),
+        'retrieval_timestamps_utc': sorted(
+            scenes['metadata_retrieved_at_utc'].dropna().unique().tolist()
+        ),
+        'catalog_prefilter': {
+            'field': 'provider scene-wide cloud cover percentage',
+            'maximum_inclusive': (
+                config.COASTSAT_AVAILABILITY_MAX_CLOUD_COVER_PCT
+            ),
+            'applied_by': 'pinned CoastSat SDS_download.get_image_info',
+        },
+        'primary_geometry_rule': {
+            'field': 'GEOMETRIC_RMSE_MODEL',
+            'maximum_inclusive_m': config.LANDSAT_MAX_GEOMETRIC_RMSE_M,
+            'missing_values_eligible': False,
+        },
+        'coverage': {
+            'all_candidates': _coverage_summary(scenes),
+            'primary_geometry_eligible': _coverage_summary(eligible),
+            'by_sensor': _grouped_coverage(scenes, 'sensor'),
+            'by_roi': _grouped_coverage(scenes, 'roi_id'),
+        },
         'scene_manifest': scene_path.name,
         'quarterly_manifest': quarter_path.name,
     }

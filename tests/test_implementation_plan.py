@@ -20,3 +20,15 @@ def test_implementation_plan_structure_and_identifiers():
     for entry in plan:
         assert set(entry) == required
         assert all(isinstance(entry[field], str) and entry[field] for field in required)
+
+    p012 = plan[11]["item"]
+    assert "reanalysis v3" in p012
+    assert "historical/future v1" in p012
+
+    p020 = plan[19]["item"]
+    assert "approved retrieval-candidate Design 1" in p020
+    assert "14 Landsat scenes" in p020
+
+    p024 = plan[23]["item"]
+    assert "uses two of the five" in p024
+    assert "reserves three" in p024
